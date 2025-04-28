@@ -1,6 +1,6 @@
 // client/src/pages/ReframePage.jsx
 import React, { useState } from 'react';
-import { FaCrop, FaImage } from 'react-icons/fa';
+import { FaCrop, FaImage, FaCrown } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import PageHeader from '../components/common/PageHeader';
 import FormWrapper from '../components/common/FormWrapper';
@@ -19,7 +19,7 @@ const ReframePage = () => {
   // Form state
   const [formData, setFormData] = useState({
     resolution: 'RESOLUTION_1024_1024',
-    model: 'V_2A'
+    model: 'V_2'  // Default to V_2 for reframe
   });
   
   // File state
@@ -28,11 +28,13 @@ const ReframePage = () => {
   // Result state
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  // Premium notice modal state
+  const [showPremiumNotice, setShowPremiumNotice] = useState(false);
   
-  // Model options based on API documentation
+  // Model options - V_2 standard and premium options
   const modelOptions = [
-    { value: 'V_2A', label: 'V2 Turbo (Recommended)' },
-    { value: 'V_2', label: 'V2 Standard' }
+    { value: 'V_2', label: 'V2 Standard' },
+    { value: 'V_3', label: 'V3 Standard (Premium) ✨' }
   ];
   
   // Resolution options based on API documentation
@@ -51,10 +53,27 @@ const ReframePage = () => {
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Check if premium model is selected
+    if (name === 'model' && value === 'V_3') {
+      setShowPremiumNotice(true);
+      // Set back to non-premium model
+      setFormData({
+        ...formData,
+        model: 'V_2'
+      });
+      return;
+    }
+    
     setFormData({
       ...formData,
       [name]: value
     });
+  };
+  
+  // Close premium notice modal
+  const closePremiumNotice = () => {
+    setShowPremiumNotice(false);
   };
   
   // Handle image file change
@@ -148,6 +167,9 @@ const ReframePage = () => {
                 value={formData.model}
                 onChange={handleChange}
               />
+              <p className="text-xs text-gray-500 mt-1">
+                V2 Standard model is recommended for reframing
+              </p>
             </div>
             
             <div className="mt-6">
@@ -222,6 +244,30 @@ const ReframePage = () => {
           </Card>
         </div>
       </div>
+      
+      {/* Premium Notice Modal */}
+      {showPremiumNotice && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-base-200 rounded-xl p-8 max-w-md mx-4"
+          >
+            <div className="flex justify-center mb-4 text-yellow-400">
+              <FaCrown size={48} />
+            </div>
+            <h3 className="text-xl font-bold text-center mb-4">Premium Feature</h3>
+            <p className="text-gray-300 mb-6 text-center">
+              V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
+            </p>
+            <div className="flex justify-center">
+              <Button onClick={closePremiumNotice}>
+                Continue with Standard Models
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

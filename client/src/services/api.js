@@ -24,24 +24,7 @@ export const generateImage = async (promptData) => {
   }
 };
 
-// Edit image with mask and prompt
-export const editImage = async (formData) => {
-  try {
-    console.log('Sending edit request with formData');
-    const response = await api.post('/images/edit', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    console.log('Edit response:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Edit error details:', error.response || error);
-    throw handleApiError(error);
-  }
-};
-
-// Remix image with prompt
+// Remix/Edit image with prompt
 export const remixImage = async (formData) => {
   try {
     console.log('Sending remix request with formData');
@@ -133,7 +116,6 @@ const handleApiError = (error) => {
 
 export default {
   generateImage,
-  editImage,
   remixImage,
   upscaleImage,
   describeImage,

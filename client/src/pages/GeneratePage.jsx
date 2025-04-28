@@ -1,6 +1,6 @@
 // client/src/pages/GeneratePage.jsx
 import React, { useState } from 'react';
-import { FaImage, FaMagic } from 'react-icons/fa';
+import { FaImage, FaMagic, FaCrown } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import PageHeader from '../components/common/PageHeader';
 import FormWrapper from '../components/common/FormWrapper';
@@ -19,38 +19,57 @@ const GeneratePage = () => {
   const [formData, setFormData] = useState({
     prompt: '',
     model: 'V_2A',
-    style_type: 'REALISTIC',
-    num_images: 1
+    style_type: 'REALISTIC'
   });
   
   // Result state
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  // Premium notice modal state
+  const [showPremiumNotice, setShowPremiumNotice] = useState(false);
   
-  // Model options based on API documentation
+  // Model options based on API documentation with premium options
   const modelOptions = [
     { value: 'V_2A', label: 'V2 Turbo (Recommended)' },
     { value: 'V_2', label: 'V2 Standard' },
-    { value: 'V_1', label: 'V1 Legacy' }
+    { value: 'V_3A', label: 'V3 Turbo (Premium) ✨' },
+    { value: 'V_3', label: 'V3 Standard (Premium) ✨' }
   ];
   
   // Style options based on API documentation
   const styleOptions = [
     { value: 'REALISTIC', label: 'Realistic' },
     { value: 'ANIME', label: 'Anime' },
-    { value: 'ILLUSTRATION', label: 'Illustration' },
-    { value: 'PAINTING', label: 'Painting' },
-    { value: 'CINEMATIC', label: 'Cinematic' },
-    { value: 'CREATIVE', label: 'Creative' }
+    { value: 'AUTO', label: 'Auto' },
+    { value: 'DESIGN', label: 'Design' },
+    { value: 'GENERAL', label: 'General' },
+    { value: 'RENDER_3D', label: 'Render 3D' }
   ];
   
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Check if premium model is selected
+    if (name === 'model' && (value === 'V_3A' || value === 'V_3')) {
+      setShowPremiumNotice(true);
+      // Set back to a non-premium model
+      setFormData({
+        ...formData,
+        model: 'V_2A'
+      });
+      return;
+    }
+    
     setFormData({
       ...formData,
       [name]: value
     });
+  };
+  
+  // Close premium notice modal
+  const closePremiumNotice = () => {
+    setShowPremiumNotice(false);
   };
   
   // Handle form submission
@@ -207,6 +226,30 @@ const GeneratePage = () => {
           ))}
         </div>
       </div>
+      
+      {/* Premium Notice Modal */}
+      {showPremiumNotice && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-base-200 rounded-xl p-8 max-w-md mx-4"
+          >
+            <div className="flex justify-center mb-4 text-yellow-400">
+              <FaCrown size={48} />
+            </div>
+            <h3 className="text-xl font-bold text-center mb-4">Premium Feature</h3>
+            <p className="text-gray-300 mb-6 text-center">
+              V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
+            </p>
+            <div className="flex justify-center">
+              <Button onClick={closePremiumNotice}>
+                Continue with Standard Models
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

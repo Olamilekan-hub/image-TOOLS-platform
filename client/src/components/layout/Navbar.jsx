@@ -43,9 +43,6 @@ const Navbar = () => {
           <Link to="/edit" className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${isActive('/edit')}`}>
             Edit
           </Link>
-          <Link to="/remix" className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${isActive('/remix')}`}>
-            Remix
-          </Link>
           <Link to="/upscale" className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${isActive('/upscale')}`}>
             Upscale
           </Link>
@@ -98,13 +95,6 @@ const Navbar = () => {
               onClick={closeMenu}
             >
               Edit
-            </Link>
-            <Link 
-              to="/remix" 
-              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/remix')}`}
-              onClick={closeMenu}
-            >
-              Remix
             </Link>
             <Link 
               to="/upscale" 

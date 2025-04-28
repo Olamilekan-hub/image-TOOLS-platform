@@ -1,12 +1,13 @@
 // client/src/pages/UpscalePage.jsx
 import React, { useState } from 'react';
-import { FaExpandArrowsAlt } from 'react-icons/fa';
+import { FaExpandArrowsAlt, FaCrown } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import PageHeader from '../components/common/PageHeader';
 import FormWrapper from '../components/common/FormWrapper';
 import Button from '../components/common/Button';
 import TextArea from '../components/common/TextArea';
 import FileInput from '../components/common/FileInput';
+import Select from '../components/common/Select';
 import ImageResult from '../components/common/ImageResult';
 import Loading from '../components/common/Loading';
 import Card from '../components/common/Card';
@@ -19,6 +20,7 @@ const UpscalePage = () => {
   // Form state
   const [formData, setFormData] = useState({
     prompt: '',
+    model: 'V_2A',
   });
   
   // File state
@@ -27,14 +29,41 @@ const UpscalePage = () => {
   // Result state
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  // Premium notice modal state
+  const [showPremiumNotice, setShowPremiumNotice] = useState(false);
+  
+  // Model options
+  const modelOptions = [
+    { value: 'V_2A', label: 'V2 Turbo (Recommended)' },
+    { value: 'V_2', label: 'V2 Standard' },
+    { value: 'V_3A', label: 'V3 Turbo (Premium) ✨' },
+    { value: 'V_3', label: 'V3 Standard (Premium) ✨' }
+  ];
   
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Check if premium model is selected
+    if (name === 'model' && (value === 'V_3A' || value === 'V_3')) {
+      setShowPremiumNotice(true);
+      // Set back to a non-premium model
+      setFormData({
+        ...formData,
+        model: 'V_2A'
+      });
+      return;
+    }
+    
     setFormData({
       ...formData,
       [name]: value
     });
+  };
+  
+  // Close premium notice modal
+  const closePremiumNotice = () => {
+    setShowPremiumNotice(false);
   };
   
   // Handle image file change
@@ -63,10 +92,11 @@ const UpscalePage = () => {
       const apiFormData = new FormData();
       apiFormData.append('image_file', imageFile);
       
-      // Add optional prompt if provided
+      // Add optional prompt and model if provided
       if (formData.prompt.trim()) {
         const imageRequest = {
           prompt: formData.prompt,
+          model: formData.model
         };
         apiFormData.append('image_request', JSON.stringify(imageRequest));
       }
@@ -113,7 +143,7 @@ const UpscalePage = () => {
             
             <div className="mt-4">
               <TextArea
-                label="Optional Prompt (Optional)"
+                label="Optional Prompt"
                 id="prompt"
                 name="prompt"
                 rows={3}
@@ -123,6 +153,20 @@ const UpscalePage = () => {
               />
               <p className="text-xs text-gray-500 mt-1">
                 A prompt is optional for upscaling, but can help guide the enhancement process
+              </p>
+            </div>
+            
+            <div className="mt-4">
+              <Select
+                label="Model"
+                id="model"
+                name="model"
+                options={modelOptions}
+                value={formData.model}
+                onChange={handleChange}
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Select the model to use for upscaling
               </p>
             </div>
             
@@ -208,6 +252,30 @@ const UpscalePage = () => {
           </Card>
         </div>
       </div>
+      
+      {/* Premium Notice Modal */}
+      {showPremiumNotice && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-base-200 rounded-xl p-8 max-w-md mx-4"
+          >
+            <div className="flex justify-center mb-4 text-yellow-400">
+              <FaCrown size={48} />
+            </div>
+            <h3 className="text-xl font-bold text-center mb-4">Premium Feature</h3>
+            <p className="text-gray-300 mb-6 text-center">
+              V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
+            </p>
+            <div className="flex justify-center">
+              <Button onClick={closePremiumNotice}>
+                Continue with Standard Models
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

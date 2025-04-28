@@ -7,25 +7,7 @@ const router = express.Router();
 // Route to generate an image from text prompt
 router.post('/generate', imageController.generateImage);
 
-// Route to edit an image with mask and prompt
-router.post('/edit', (req, res, next) => {
-  req.upload.fields([
-    { name: 'image_file', maxCount: 1 },
-    { name: 'mask', maxCount: 1 }
-  ])(req, res, (err) => {
-    if (err) {
-      console.error('Multer error in edit route:', err);
-      return res.status(400).json({
-        success: false,
-        message: err.message || 'Error uploading files',
-        error: err
-      });
-    }
-    imageController.editImage(req, res);
-  });
-});
-
-// Route to remix an image with a prompt
+// Route to remix/edit an image with a prompt
 router.post('/remix', (req, res, next) => {
   req.upload.single('image_file')(req, res, (err) => {
     if (err) {
