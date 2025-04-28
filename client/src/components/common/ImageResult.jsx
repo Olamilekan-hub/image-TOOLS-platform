@@ -11,31 +11,99 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
   const [imageUrl, setImageUrl] = useState('');
   const [imageLoadError, setImageLoadError] = useState(false);
   const [imageLoadSuccess, setImageLoadSuccess] = useState(false);
+  const [metadata, setMetadata] = useState({
+    resolution: null,
+    style_type: null,
+    seed: null,
+    is_image_safe: null
+  });
   
   useEffect(() => {
     // Reset states when new data comes in
     setImageLoadError(false);
     setImageLoadSuccess(false);
     
-    // Extract image URL from response data with fallback paths
-    if (imageData && imageData.data && imageData.data.length > 0) {
-      const url = imageData.data[0].url || '';
-      setImageUrl(url);
-      
-      if (!url) {
-        console.error('No image URL found in the response data:', imageData);
-        setImageLoadError(true);
-        addToast('No image URL found in the API response', 'error');
-      }
-    } else if (imageData && imageData.error) {
-      console.error('API returned an error:', imageData.error);
-      setImageLoadError(true);
-      addToast(`API Error: ${imageData.message || 'Unknown error'}`, 'error');
-    } else if (!imageData) {
+    console.log('ImageResult received data:', imageData);
+    
+    if (!imageData) {
       console.error('No image data received');
       setImageLoadError(true);
+      return;
     }
+
+    // Extract image URL
+    let url = extractImageUrl(imageData);
+    setImageUrl(url);
+    
+    if (!url) {
+      console.error('No image URL found in the response data:', imageData);
+      setImageLoadError(true);
+      addToast('No image URL found in the API response', 'error');
+    }
+    
+    // Extract metadata
+    const extractedMetadata = extractMetadata(imageData);
+    setMetadata(extractedMetadata);
+    
   }, [imageData, addToast]);
+  
+  // Extract URL from various response formats
+  const extractImageUrl = (data) => {
+    let url = null;
+    
+    try {
+      // Special case for the specific structure we found:
+      // { data: { data: [{ url: '...' }] } }
+      if (data.data && data.data.data && Array.isArray(data.data.data) && data.data.data.length > 0) {
+        url = data.data.data[0]?.url || null;
+        console.log('Found URL in data.data[0].url:', url);
+      }
+      // Normal array format: { data: [{ url: '...' }] }
+      else if (Array.isArray(data.data) && data.data.length > 0) {
+        url = data.data[0]?.url || null;
+        console.log('Found URL in data[0].url:', url);
+      } 
+      // Images array format: { data: { images: [{ url: '...' }] } }
+      else if (data.data && data.data.images && Array.isArray(data.data.images) && data.data.images.length > 0) {
+        url = data.data.images[0]?.url || null;
+        console.log('Found URL in data.images[0].url:', url);
+      } 
+      // Direct URL format: { data: { url: '...' } }
+      else if (data.data && typeof data.data === 'object' && data.data.url) {
+        url = data.data.url;
+        console.log('Found URL in data.url:', url);
+      }
+    } catch (e) {
+      console.error('Error extracting URL:', e);
+    }
+    
+    return url;
+  };
+  
+  // Extract metadata from response
+  const extractMetadata = (data) => {
+    let meta = {
+      resolution: null,
+      style_type: null,
+      seed: null,
+      is_image_safe: null
+    };
+    
+    try {
+      // Check if data.data[0] exists (our specific case)
+      if (data.data && data.data.data && data.data.data[0]) {
+        const imageInfo = data.data.data[0];
+        meta.resolution = imageInfo.resolution || null;
+        meta.style_type = imageInfo.style_type || null;
+        meta.seed = imageInfo.seed || null;
+        meta.is_image_safe = imageInfo.is_image_safe !== undefined ? imageInfo.is_image_safe : null;
+      }
+    } catch (e) {
+      console.error('Error extracting metadata:', e);
+    }
+    
+    return meta;
+  };
   
   // Handle image load error
   const handleImageError = () => {
@@ -47,6 +115,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
   
   // Handle image load success
   const handleImageLoad = () => {
+    console.log('Image loaded successfully');
     setImageLoadSuccess(true);
     setImageLoadError(false);
   };
@@ -64,36 +133,21 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
     }
     
     try {
-      // Check if we can fetch the image (CORS might prevent this)
-      fetch(imageUrl, { method: 'HEAD' })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Failed to fetch image: ${response.statusText}`);
-          }
-          
-          // Create download link and trigger download
-          const link = document.createElement('a');
-          link.href = imageUrl;
-          link.download = `ideogram-${Date.now()}.jpg`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          addToast('Image downloaded successfully', 'success');
-        })
-        .catch(error => {
-          console.error('Download error:', error);
-          
-          // Fallback: Open in new tab if direct download fails
-          window.open(imageUrl, '_blank');
-          addToast('Direct download failed. Image opened in new tab instead.', 'info');
-        });
+      // Create download link and trigger download
+      const link = document.createElement('a');
+      link.href = imageUrl;
+      link.download = `ideogram-${Date.now()}.png`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      addToast('Image downloaded successfully', 'success');
     } catch (error) {
       console.error('Download error:', error);
-      addToast('Failed to download image. Please try opening in a new tab instead.', 'error');
-      
       // Fallback: Open in new tab
       window.open(imageUrl, '_blank');
+      addToast('Direct download failed. Image opened in new tab instead.', 'info');
     }
   };
   
@@ -115,8 +169,8 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
     );
   };
 
-  // If no data or URL, don't render
-  if (!imageData || (!imageUrl && !imageLoadError)) {
+  // If no data, don't render
+  if (!imageData) {
     return null;
   }
 
@@ -128,7 +182,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
     >
       <Card className="overflow-hidden">
         <div className="relative">
-          {imageLoadError ? (
+          {imageLoadError || !imageUrl ? (
             <div className="w-full h-64 bg-base-300 flex flex-col items-center justify-center p-6">
               <FaExclamationCircle size={48} className="text-red-500 mb-4" />
               <p className="text-center text-gray-300 mb-2">
@@ -194,22 +248,22 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
           
           {/* Image Metadata */}
           <div className="mt-4 flex flex-wrap gap-2">
-            {imageData?.data?.[0]?.resolution && (
+            {metadata.resolution && (
               <span className="bg-base-300 px-2 py-1 rounded-md text-xs">
-                {imageData.data[0].resolution}
+                {metadata.resolution}
               </span>
             )}
-            {imageData?.data?.[0]?.style_type && (
+            {metadata.style_type && (
               <span className="bg-base-300 px-2 py-1 rounded-md text-xs">
-                {imageData.data[0].style_type}
+                {metadata.style_type}
               </span>
             )}
-            {imageData?.data?.[0]?.seed && (
+            {metadata.seed && (
               <span className="bg-base-300 px-2 py-1 rounded-md text-xs">
-                Seed: {imageData.data[0].seed}
+                Seed: {metadata.seed}
               </span>
             )}
-            {imageData?.data?.[0]?.is_image_safe === true && (
+            {metadata.is_image_safe === true && (
               <span className="bg-green-900 px-2 py-1 rounded-md text-xs text-green-100">
                 Safe Content
               </span>

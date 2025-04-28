@@ -62,6 +62,9 @@ export const generateImage = async (req, res) => {
       { headers: getHeaders() }
     );
 
+    // Log response structure to help debug
+    console.log('Ideogram API Response:', JSON.stringify(response.data, null, 2));
+
     res.status(200).json({
       success: true,
       message: 'Image generated successfully',
@@ -112,6 +115,9 @@ export const editImage = async (req, res) => {
     fs.unlinkSync(imageFile.path);
     fs.unlinkSync(maskFile.path);
     
+    // Log response structure to help debug
+    console.log('Ideogram API Edit Response:', JSON.stringify(response.data, null, 2));
+    
     res.status(200).json({
       success: true,
       message: 'Image edited successfully',
@@ -126,7 +132,26 @@ export const editImage = async (req, res) => {
 // Remix image with a prompt
 export const remixImage = async (req, res) => {
   try {
-    const { prompt, model = 'V_2A', aspect_ratio = 'ASPECT_16_9', magic_prompt_option = 'ON' } = req.body;
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'Image file is required'
+      });
+    }
+    
+    // Parsing the image_request from the body if it exists
+    let imageRequest = {};
+    if (req.body.image_request) {
+      try {
+        imageRequest = typeof req.body.image_request === 'string' 
+          ? JSON.parse(req.body.image_request) 
+          : req.body.image_request;
+      } catch (e) {
+        console.error('Error parsing image_request:', e);
+      }
+    }
+    
+    const prompt = imageRequest.prompt || req.body.prompt;
     
     if (!prompt) {
       return res.status(400).json({
@@ -134,22 +159,19 @@ export const remixImage = async (req, res) => {
         message: 'Prompt is required'
       });
     }
-    
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: 'Image file is required'
-      });
-    }
 
     const formData = new FormData();
     formData.append('image_file', fs.createReadStream(req.file.path));
-    formData.append('image_request', JSON.stringify({
+    
+    // Prepare image request object
+    const requestObj = {
       prompt,
-      model,
-      aspect_ratio,
-      magic_prompt_option
-    }));
+      model: imageRequest.model || req.body.model || 'V_2A',
+      aspect_ratio: imageRequest.aspect_ratio || req.body.aspect_ratio || 'ASPECT_16_9',
+      magic_prompt_option: imageRequest.magic_prompt_option || req.body.magic_prompt_option || 'ON'
+    };
+    
+    formData.append('image_request', JSON.stringify(requestObj));
     
     const response = await axios.post(REMIX_URL, formData, {
       headers: {
@@ -160,6 +182,9 @@ export const remixImage = async (req, res) => {
     
     // Clean up uploaded file
     fs.unlinkSync(req.file.path);
+    
+    // Log response structure to help debug
+    console.log('Ideogram API Remix Response:', JSON.stringify(response.data, null, 2));
     
     res.status(200).json({
       success: true,
@@ -175,14 +200,26 @@ export const remixImage = async (req, res) => {
 // Upscale an image
 export const upscaleImage = async (req, res) => {
   try {
-    const { prompt } = req.body; // Optional prompt
-    
     if (!req.file) {
       return res.status(400).json({
         success: false,
         message: 'Image file is required'
       });
     }
+    
+    // Try to parse the image_request if it exists
+    let imageRequest = {};
+    if (req.body.image_request) {
+      try {
+        imageRequest = typeof req.body.image_request === 'string' 
+          ? JSON.parse(req.body.image_request) 
+          : req.body.image_request;
+      } catch (e) {
+        console.error('Error parsing image_request:', e);
+      }
+    }
+    
+    const prompt = imageRequest.prompt || req.body.prompt;
 
     const formData = new FormData();
     formData.append('image_file', fs.createReadStream(req.file.path));
@@ -201,6 +238,9 @@ export const upscaleImage = async (req, res) => {
     
     // Clean up uploaded file
     fs.unlinkSync(req.file.path);
+    
+    // Log response structure to help debug
+    console.log('Ideogram API Upscale Response:', JSON.stringify(response.data, null, 2));
     
     res.status(200).json({
       success: true,
@@ -236,11 +276,13 @@ export const describeImage = async (req, res) => {
     // Clean up uploaded file
     fs.unlinkSync(req.file.path);
     
+    // Log response structure to help debug
+    console.log('Ideogram API Describe Response:', JSON.stringify(response.data, null, 2));
+    
     res.status(200).json({
       success: true,
       message: 'Image described successfully',
-      data: response.data,
-      descriptions: response.data.descriptions || [] // Include descriptions in response
+      data: response.data
     });
   } catch (error) {
     handleApiError(error, res);
@@ -250,7 +292,7 @@ export const describeImage = async (req, res) => {
 // Reframe an image
 export const reframeImage = async (req, res) => {
   try {
-    const { resolution = 'RESOLUTION_512_512', model = 'V_2A' } = req.body;
+    const { resolution = 'RESOLUTION_1024_1024', model = 'V_2A' } = req.body;
     
     if (!req.file) {
       return res.status(400).json({
@@ -273,6 +315,9 @@ export const reframeImage = async (req, res) => {
     
     // Clean up uploaded file
     fs.unlinkSync(req.file.path);
+    
+    // Log response structure to help debug
+    console.log('Ideogram API Reframe Response:', JSON.stringify(response.data, null, 2));
     
     res.status(200).json({
       success: true,
