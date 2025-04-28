@@ -1,0 +1,23 @@
+{
+  "name": "image-ai-platform",
+  "version": "1.0.0",
+  "description": "Image generation platform using Ideogram API",
+  "scripts": {
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "setup": "npm i && cd client && npm i && cd ../server && npm i",
+    "build": "cd client && npm run build"
+  },
+  "keywords": [
+    "ideogram",
+    "ai",
+    "image",
+    "generation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
