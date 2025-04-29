@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="pixyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" /> <!-- Primary blue -->
+      <stop offset="50%" stop-color="#8b5cf6" /> <!-- Accent purple -->
+      <stop offset="100%" stop-color="#3b82f6" /> <!-- Back to primary -->
+    </linearGradient>
+  </defs>
+  <!-- Rounded rectangle background -->
+  <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#pixyGradient)" />
+  
+  <!-- "P" shape drawn with paths instead of text for better compatibility -->
+  <path d="M11 9h7.5c2.5 0 4.5 2 4.5 4.5S21 18 18.5 18H13v5h-2V9z" fill="white" />
+  <path d="M13 11v5h5.5c1.4 0 2.5-1.1 2.5-2.5S19.9 11 18.5 11H13z" fill="url(#pixyGradient)" opacity="0.3" />
+</svg>
