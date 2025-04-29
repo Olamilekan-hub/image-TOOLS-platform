@@ -18,12 +18,12 @@ const TextArea = ({
   const [focused, setFocused] = useState(false);
   const [charCount, setCharCount] = useState(props.value?.length || 0);
   
-  // Define variant styles
+  // Define variant styles with proper light/dark mode support
   const variantClasses = {
-    default: 'bg-dark-800 border border-dark-600 focus:border-primary-500 focus:ring-primary-500',
-    filled: 'bg-dark-700 border-0 focus:bg-dark-800 focus:ring-primary-500',
-    glass: 'bg-dark-800/70 backdrop-blur-sm border border-dark-700/50 focus:border-primary-500 focus:ring-primary-500',
-    minimal: 'bg-transparent border-b border-dark-600 rounded-none px-0 focus:border-primary-500 focus:ring-0',
+    default: 'bg-white dark:bg-dark-800 border border-light-300 dark:border-dark-600 focus:border-primary-500 focus:ring-primary-500',
+    filled: 'bg-light-100 dark:bg-dark-700 border-0 focus:bg-white dark:focus:bg-dark-800 focus:ring-primary-500',
+    glass: 'bg-white/70 dark:bg-dark-800/70 backdrop-blur-sm border border-light-200/50 dark:border-dark-700/50 focus:border-primary-500 focus:ring-primary-500',
+    minimal: 'bg-transparent border-b border-light-300 dark:border-dark-600 rounded-none px-0 focus:border-primary-500 focus:ring-0',
   };
   
   const handleChange = (e) => {
@@ -41,7 +41,7 @@ const TextArea = ({
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={id} className="block text-sm font-medium text-dark-300 mb-1.5 flex items-center">
+        <label htmlFor={id} className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1.5 flex items-center">
           {label}
           {required && <span className="ml-1 text-accent-500">*</span>}
         </label>
@@ -53,7 +53,7 @@ const TextArea = ({
           rows={rows}
           className={`
             w-full rounded-lg px-4 py-3
-            text-white placeholder-dark-400
+            text-dark-900 dark:text-white placeholder-dark-500 dark:placeholder-dark-400
             transition-all duration-200
             focus:outline-none focus:ring-2 focus:ring-opacity-50
             ${error ? 'border-red-500 focus:ring-red-500' : variantClasses[variant]}
@@ -71,7 +71,7 @@ const TextArea = ({
         
         {showCount && maxLength && (
           <div className={`absolute bottom-2 right-2 text-xs ${
-            charCount >= maxLength ? 'text-red-500' : 'text-dark-400'
+            charCount >= maxLength ? 'text-red-500' : 'text-dark-500 dark:text-dark-400'
           }`}>
             {charCount}/{maxLength}
           </div>
@@ -86,7 +86,7 @@ const TextArea = ({
           {error}
         </p>
       ) : helpText && (
-        <p id={`${id}-description`} className="mt-1.5 text-sm text-dark-400">
+        <p id={`${id}-description`} className="mt-1.5 text-sm text-dark-500 dark:text-dark-400">
           {helpText}
         </p>
       )}

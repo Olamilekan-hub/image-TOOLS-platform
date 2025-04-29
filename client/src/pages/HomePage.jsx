@@ -116,7 +116,7 @@ const HomePage = () => {
               >
                 <div className="relative flex items-center justify-center w-20 h-20">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-2xl opacity-90 animate-pulse-slow"></div>
-                  <span className="relative text-4xl font-bold text-white font-display">I</span>
+                  <span className="relative text-4xl font-bold text-white font-display">P</span>
                   
                   {/* Decorative orbs */}
                   <motion.div 
@@ -152,13 +152,13 @@ const HomePage = () => {
                 </div>
               </motion.div>
               
-              <h1 className="mb-6 text-4xl font-bold tracking-tight md:text-6xl font-display">
+              <h1 className="mb-6 text-4xl font-bold tracking-tight md:text-6xl font-display text-dark-900 dark:text-white">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-secondary-400 to-accent-400">
                   Unleash Creative Image Generation
                 </span>
               </h1>
               
-              <p className="max-w-3xl mx-auto mb-8 text-lg md:text-xl text-dark-300">
+              <p className="max-w-3xl mx-auto mb-8 text-lg md:text-xl text-dark-600 dark:text-dark-300">
                 Transform your ideas into stunning visuals with our AI-powered image platform.
                 Generate, edit, and enhance images with simple text prompts.
               </p>
@@ -193,33 +193,33 @@ const HomePage = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.3 }}
             >
-              <div className="relative max-w-4xl p-2 mx-auto overflow-hidden border bg-dark-800/50 backdrop-blur-md rounded-2xl border-dark-700/50 shadow-glass-lg">
+              <div className="relative max-w-4xl p-2 mx-auto overflow-hidden border bg-white/50 dark:bg-dark-800/50 backdrop-blur-md rounded-2xl border-light-200/50 dark:border-dark-700/50 shadow-glass-lg">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-500/40 to-transparent"></div>
                 
                 {/* Mockup image */}
-                <div className="relative overflow-hidden rounded-lg bg-dark-900">
+                <div className="relative overflow-hidden rounded-lg bg-light-50 dark:bg-dark-900">
                   {/* Replace with actual mockup image */}
-                  <div className="flex items-center justify-center aspect-video bg-gradient-to-br from-dark-800 to-dark-900">
+                  <div className="flex items-center justify-center aspect-video bg-gradient-to-br from-light-100 to-light-200 dark:from-dark-800 dark:to-dark-900">
                     <div className="px-6 py-12 text-center">
                       <div className="animate-pulse">
                         <div className="flex justify-center mb-4">
                           <FaImage size={64} className="text-primary-500/30" />
                         </div>
-                        <div className="w-64 h-4 mx-auto mb-3 rounded bg-dark-700/50"></div>
-                        <div className="w-48 h-4 mx-auto rounded bg-dark-700/50"></div>
+                        <div className="w-64 h-4 mx-auto mb-3 rounded bg-light-300/50 dark:bg-dark-700/50"></div>
+                        <div className="w-48 h-4 mx-auto rounded bg-light-300/50 dark:bg-dark-700/50"></div>
                       </div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Control bar mockup */}
-                <div className="flex items-center justify-between px-4 py-3 mt-2 rounded-lg bg-dark-800/70">
+                <div className="flex items-center justify-between px-4 py-3 mt-2 rounded-lg bg-light-100/70 dark:bg-dark-800/70">
                   <div className="flex space-x-2">
                     <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                     <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   </div>
-                  <div className="w-32 h-4 rounded bg-dark-700/50"></div>
+                  <div className="w-32 h-4 rounded bg-light-300/50 dark:bg-dark-700/50"></div>
                 </div>
               </div>
               
@@ -232,7 +232,7 @@ const HomePage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative py-20 bg-dark-950">
+      <section id="features" className="relative py-20 bg-light-50 dark:bg-dark-950">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="container px-4 mx-auto">
           <div className="mb-16 text-center">
@@ -241,7 +241,7 @@ const HomePage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="inline-block mb-3 px-4 py-1.5 bg-dark-800/80 rounded-full"
+              className="inline-block mb-3 px-4 py-1.5 bg-light-100/80 dark:bg-dark-800/80 rounded-full"
             >
               <span className="text-sm font-medium text-transparent bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text">
                 Powerful AI Toolkit
@@ -253,7 +253,7 @@ const HomePage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="mb-4 text-3xl font-bold tracking-tight md:text-4xl font-display"
+              className="mb-4 text-3xl font-bold tracking-tight md:text-4xl font-display text-dark-900 dark:text-white"
             >
               Everything You Need for AI Imagery
             </motion.h2>
@@ -263,7 +263,7 @@ const HomePage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="max-w-2xl mx-auto text-lg text-dark-300"
+              className="max-w-2xl mx-auto text-lg text-dark-600 dark:text-dark-300"
             >
               Explore our suite of AI-powered tools for image creation, modification, and enhancement
             </motion.p>
@@ -293,10 +293,10 @@ const HomePage = () => {
                         {feature.icon}
                       </div>
                       <Card.Title>{feature.title}</Card.Title>
-                      <p className="transition-colors text-dark-300 group-hover:text-dark-200">{feature.description}</p>
+                      <p className="transition-colors text-dark-600 dark:text-dark-300 group-hover:text-dark-700 dark:group-hover:text-dark-200">{feature.description}</p>
                     </Card.Body>
                     <Card.Footer className="flex justify-end">
-                      <div className="flex items-center gap-1 text-sm transition-all text-primary-400 group-hover:gap-2">
+                      <div className="flex items-center gap-1 text-sm transition-all text-primary-600 dark:text-primary-400 group-hover:gap-2">
                         Try Now <FaArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
                       </div>
                     </Card.Footer>
@@ -310,7 +310,7 @@ const HomePage = () => {
 
       {/* CTA Section */}
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-dark-900 to-dark-950"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-light-50 to-light-100 dark:from-dark-900 dark:to-dark-950"></div>
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_30%_20%,_rgba(139,92,246,0.4)_0%,_transparent_60%)]"></div>
         <div className="container relative z-10 px-4 mx-auto">
           <motion.div
@@ -318,18 +318,18 @@ const HomePage = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-4xl p-8 mx-auto border glass-container rounded-2xl md:p-12 border-dark-700/30"
+            className="max-w-4xl p-8 mx-auto border glass-container rounded-2xl md:p-12 border-light-200/30 dark:border-dark-700/30"
           >
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-primary-500/10">
-                <FaLightbulb className="w-8 h-8 text-primary-400" />
+                <FaLightbulb className="w-8 h-8 text-primary-600 dark:text-primary-400" />
               </div>
               
-              <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl font-display">
+              <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl font-display text-dark-900 dark:text-white">
                 Ready to Create?
               </h2>
               
-              <p className="max-w-2xl mx-auto mb-8 text-lg text-dark-300">
+              <p className="max-w-2xl mx-auto mb-8 text-lg text-dark-600 dark:text-dark-300">
                 Start with a simple text prompt and watch as AI transforms your ideas into stunning visuals
               </p>
               
@@ -346,15 +346,15 @@ const HomePage = () => {
               <div className="flex flex-wrap justify-center gap-8 mt-8">
                 <div className="flex items-center">
                   <FaStar className="mr-2 text-amber-400" />
-                  <span className="text-dark-300">State-of-the-art models</span>
+                  <span className="text-dark-600 dark:text-dark-300">State-of-the-art models</span>
                 </div>
                 <div className="flex items-center">
                   <FaStar className="mr-2 text-amber-400" />
-                  <span className="text-dark-300">Fast processing</span>
+                  <span className="text-dark-600 dark:text-dark-300">Fast processing</span>
                 </div>
                 <div className="flex items-center">
                   <FaStar className="mr-2 text-amber-400" />
-                  <span className="text-dark-300">Endless creative possibilities</span>
+                  <span className="text-dark-600 dark:text-dark-300">Endless creative possibilities</span>
                 </div>
               </div>
             </div>

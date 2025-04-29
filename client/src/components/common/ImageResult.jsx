@@ -216,14 +216,14 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
       >
         <div className="relative">
           {imageLoadError || !imageUrl ? (
-            <div className="flex flex-col items-center justify-center w-full h-64 p-6 bg-dark-800/70 backdrop-blur-sm">
+            <div className="flex flex-col items-center justify-center w-full h-64 p-6 bg-light-100/70 dark:bg-dark-800/70 backdrop-blur-sm">
               <div className="p-4 mb-4 rounded-full bg-red-500/10">
                 <FaExclamationCircle size={36} className="text-red-500" />
               </div>
-              <p className="mb-2 font-medium text-center text-white">
+              <p className="mb-2 font-medium text-center text-dark-900 dark:text-white">
                 Failed to load or display the generated image
               </p>
-              <p className="max-w-md text-sm text-center text-dark-400">
+              <p className="max-w-md text-sm text-center text-dark-600 dark:text-dark-400">
                 The image may still be processing or the link may have expired.
                 Try checking the API response details below.
               </p>
@@ -231,7 +231,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
           ) : (
             <div className="relative group">
               {/* Image */}
-              <div className="w-full overflow-hidden bg-dark-900/30 rounded-t-xl">
+              <div className="w-full overflow-hidden bg-light-100/30 dark:bg-dark-900/30 rounded-t-xl">
                 <img 
                   src={imageUrl} 
                   alt={prompt || 'Generated image'} 
@@ -243,7 +243,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
               
               {/* Action buttons overlay - visible on hover or mobile */}
               {imageLoadSuccess && (
-                <div className="absolute top-0 left-0 flex flex-col justify-between w-full h-full p-4 transition-opacity duration-300 opacity-0 bg-gradient-to-b from-dark-900/60 via-transparent to-dark-900/60 group-hover:opacity-100">
+                <div className="absolute top-0 left-0 flex flex-col justify-between w-full h-full p-4 transition-opacity duration-300 opacity-0 bg-gradient-to-b from-light-900/60 dark:from-dark-900/60 via-transparent to-light-900/60 dark:to-dark-900/60 group-hover:opacity-100">
                   {/* Top actions row */}
                   <div className="flex justify-end space-x-2">
                     <Button 
@@ -290,20 +290,20 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
           {prompt && (
             <div className="mb-5">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-medium text-dark-300">Prompt</h3>
+                <h3 className="text-sm font-medium text-dark-600 dark:text-dark-300">Prompt</h3>
                 <Button
                   variant="ghost"
                   size="xs"
                   onClick={copyPromptToClipboard}
                   title="Copy prompt to clipboard"
-                  className="text-dark-400 hover:text-white"
+                  className="text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white"
                   icon={isCopied ? <FaCheck size={12} /> : <FaClipboard size={12} />}
                 >
                   {isCopied ? 'Copied' : 'Copy'}
                 </Button>
               </div>
-              <div className="relative p-3 rounded-lg bg-dark-800/70 group">
-                <p className="text-sm text-white">{prompt}</p>
+              <div className="relative p-3 rounded-lg bg-light-100/70 dark:bg-dark-800/70 group">
+                <p className="text-sm text-dark-800 dark:text-white">{prompt}</p>
               </div>
             </div>
           )}
@@ -337,7 +337,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
             <Button
               variant="ghost"
               size="xs"
-              className="justify-between w-full text-dark-400 hover:text-white"
+              className="justify-between w-full text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white"
               onClick={() => setShowDetails(!showDetails)}
               icon={<FaCode size={12} />}
               iconPosition="left"
@@ -362,8 +362,8 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  <div className="p-3 mt-2 overflow-auto text-xs border rounded-lg bg-dark-900/70 max-h-48 border-dark-700">
-                    <pre className="font-mono text-xs text-dark-300">
+                  <div className="p-3 mt-2 overflow-auto text-xs border rounded-lg bg-light-50/70 dark:bg-dark-900/70 max-h-48 border-light-300 dark:border-dark-700">
+                    <pre className="font-mono text-xs text-dark-600 dark:text-dark-300">
                       {JSON.stringify(imageData, null, 2)}
                     </pre>
                   </div>

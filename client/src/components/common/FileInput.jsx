@@ -22,12 +22,12 @@ const FileInput = ({
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Variant styles
+  // Variant styles with proper light/dark mode support
   const variantClasses = {
-    default: 'bg-dark-800 border border-dark-600 hover:border-primary-500',
-    filled: 'bg-dark-700 border-2 border-dashed border-dark-600 hover:border-primary-500',
-    glass: 'bg-dark-800/70 backdrop-blur-sm border border-dark-700/50 hover:border-primary-500',
-    minimal: 'bg-transparent border border-dashed border-dark-600 hover:border-primary-500',
+    default: 'bg-white dark:bg-dark-800 border border-light-300 dark:border-dark-600 hover:border-primary-500',
+    filled: 'bg-light-100 dark:bg-dark-700 border-2 border-dashed border-light-300 dark:border-dark-600 hover:border-primary-500',
+    glass: 'bg-white/70 dark:bg-dark-800/70 backdrop-blur-sm border border-light-200/50 dark:border-dark-700/50 hover:border-primary-500',
+    minimal: 'bg-transparent border border-dashed border-light-300 dark:border-dark-600 hover:border-primary-500',
   };
 
   const handleFileChange = (e) => {
@@ -97,7 +97,7 @@ const FileInput = ({
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={id} className="block text-sm font-medium text-dark-300 mb-1.5 flex items-center">
+        <label htmlFor={id} className="block text-sm font-medium text-dark-600 dark:text-dark-300 mb-1.5 flex items-center">
           {label}
           {required && <span className="ml-1 text-accent-500">*</span>}
         </label>
@@ -137,7 +137,7 @@ const FileInput = ({
               onDrop={handleDrop}
             >
               <div className="flex flex-col items-center text-center">
-                <div className={`mb-3 p-3 rounded-full ${dragActive ? 'bg-primary-500/20 text-primary-500' : 'bg-dark-700 text-primary-400'}`}>
+                <div className={`mb-3 p-3 rounded-full ${dragActive ? 'bg-primary-500/20 text-primary-500' : 'bg-light-100 dark:bg-dark-700 text-primary-600 dark:text-primary-400'}`}>
                   {accept.includes('image') ? (
                     <FaImage className="w-6 h-6" />
                   ) : (
@@ -145,12 +145,12 @@ const FileInput = ({
                   )}
                 </div>
                 
-                <p className="mb-1 text-sm font-medium text-white">
+                <p className="mb-1 text-sm font-medium text-dark-800 dark:text-white">
                   {fileName ? fileName : 'Drag & drop file here or click to browse'}
                 </p>
                 
                 {!fileName && (
-                  <p className="text-xs text-dark-400">
+                  <p className="text-xs text-dark-500 dark:text-dark-400">
                     {accept.includes('image') ? 'PNG, JPG, or WebP up to 10MB' : 'Upload a file up to 10MB'}
                   </p>
                 )}
@@ -168,7 +168,7 @@ const FileInput = ({
                   ${className}
                 `}
               >
-                <FaUpload className="mr-2 text-primary-400" />
+                <FaUpload className="mr-2 text-primary-600 dark:text-primary-400" />
                 {fileName ? fileName : 'Choose a file...'}
               </label>
             </div>
@@ -178,7 +178,7 @@ const FileInput = ({
             <button
               type="button"
               onClick={clearFile}
-              className="absolute p-1 transition-colors rounded-full top-2 right-2 text-dark-400 hover:text-white bg-dark-800/80"
+              className="absolute p-1 transition-colors rounded-full top-2 right-2 text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white bg-light-100/80 dark:bg-dark-800/80"
               aria-label="Clear file"
             >
               <FaTimesCircle size={16} />
@@ -192,7 +192,7 @@ const FileInput = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
-            className="relative mt-3 overflow-hidden rounded-lg shadow-md bg-dark-900/50"
+            className="relative mt-3 overflow-hidden rounded-lg shadow-md bg-light-50/50 dark:bg-dark-900/50"
           >
             <img
               src={preview}
@@ -211,7 +211,7 @@ const FileInput = ({
           {error}
         </p>
       ) : helpText && (
-        <p className="mt-1.5 text-sm text-dark-400">
+        <p className="mt-1.5 text-sm text-dark-500 dark:text-dark-400">
           {helpText}
         </p>
       )}

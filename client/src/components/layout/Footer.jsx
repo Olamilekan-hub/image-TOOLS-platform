@@ -69,7 +69,7 @@ const Footer = () => {
                 Pixy AI
               </span>
             </div>
-            <p className="max-w-sm mb-6 text-dark-500 dark:text-dark-300">
+            <p className="max-w-sm mb-6 text-dark-600 dark:text-dark-300">
               Powerful AI platform for creating, editing, and transforming images with intuitive tools powered by state-of-the-art models.
             </p>
             <div className="flex space-x-3">

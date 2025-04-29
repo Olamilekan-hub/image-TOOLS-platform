@@ -17,18 +17,18 @@ const Select = ({
 }) => {
   const [focused, setFocused] = useState(false);
   
-  // Define variant styles
+  // Define variant styles with proper light/dark mode support
   const variantClasses = {
-    default: 'bg-dark-800 border border-dark-600 focus:border-primary-500 focus:ring-primary-500',
-    filled: 'bg-dark-700 border-0 focus:bg-dark-800 focus:ring-primary-500',
-    glass: 'bg-dark-800/70 backdrop-blur-sm border border-dark-700/50 focus:border-primary-500 focus:ring-primary-500',
-    minimal: 'bg-transparent border-b border-dark-600 rounded-none px-0 focus:border-primary-500 focus:ring-0',
+    default: 'bg-white dark:bg-dark-800 border border-light-300 dark:border-dark-600 focus:border-primary-500 focus:ring-primary-500',
+    filled: 'bg-light-100 dark:bg-dark-700 border-0 focus:bg-white dark:focus:bg-dark-800 focus:ring-primary-500',
+    glass: 'bg-white/70 dark:bg-dark-800/70 backdrop-blur-sm border border-light-200/50 dark:border-dark-700/50 focus:border-primary-500 focus:ring-primary-500',
+    minimal: 'bg-transparent border-b border-light-300 dark:border-dark-600 rounded-none px-0 focus:border-primary-500 focus:ring-0',
   };
   
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={id} className="block text-sm font-medium text-dark-300 mb-1.5 flex items-center">
+        <label htmlFor={id} className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1.5 flex items-center">
           {label}
           {required && <span className="ml-1 text-accent-500">*</span>}
         </label>
@@ -36,7 +36,7 @@ const Select = ({
       
       <div className="relative">
         {icon && (
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-dark-400">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-dark-500 dark:text-dark-400">
             {icon}
           </div>
         )}
@@ -46,7 +46,7 @@ const Select = ({
           className={`
             w-full rounded-lg appearance-none
             ${icon ? 'pl-10' : 'pl-4'} pr-10 py-2.5
-            text-white
+            text-dark-900 dark:text-white
             transition-all duration-200
             focus:outline-none focus:ring-2 focus:ring-opacity-50
             ${error ? 'border-red-500 focus:ring-red-500' : variantClasses[variant]}
@@ -70,6 +70,7 @@ const Select = ({
               key={option.value} 
               value={option.value}
               disabled={option.disabled}
+              className="bg-white dark:bg-dark-800 text-dark-900 dark:text-white"
             >
               {option.label}
             </option>
@@ -77,7 +78,7 @@ const Select = ({
         </select>
         
         {/* Custom select arrow */}
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-dark-400">
+        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-dark-500 dark:text-dark-400">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
           </svg>
@@ -92,7 +93,7 @@ const Select = ({
           {error}
         </p>
       ) : helpText && (
-        <p id={`${id}-description`} className="mt-1.5 text-sm text-dark-400">
+        <p id={`${id}-description`} className="mt-1.5 text-sm text-dark-500 dark:text-dark-400">
           {helpText}
         </p>
       )}

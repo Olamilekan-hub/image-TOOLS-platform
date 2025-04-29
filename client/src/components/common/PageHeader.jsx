@@ -27,7 +27,7 @@ const PageHeader = ({
               transition={{ duration: 0.3, delay: 0.1 }}
               className="inline-flex self-start"
             >
-              <span className="inline-flex items-center px-3 py-1 text-xs font-medium border rounded-full bg-primary-500/10 text-primary-400 border-primary-500/20">
+              <span className="inline-flex items-center px-3 py-1 text-xs font-medium border rounded-full bg-primary-500/10 text-primary-600 dark:text-primary-400 border-primary-500/20">
                 {badge}
               </span>
             </motion.div>
@@ -45,12 +45,12 @@ const PageHeader = ({
                   damping: 20,
                   delay: 0.2
                 }}
-                className="p-3 text-primary-500 bg-primary-500/10 rounded-xl"
+                className="p-3 text-primary-600 dark:text-primary-500 bg-primary-500/10 rounded-xl"
               >
                 {icon}
               </motion.div>
             )}
-            <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl font-display">
+            <h1 className="text-3xl font-bold tracking-tight text-dark-900 dark:text-white md:text-4xl font-display">
               {title}
             </h1>
             
@@ -68,7 +68,7 @@ const PageHeader = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="max-w-3xl mt-2 text-lg text-dark-300"
+              className="max-w-3xl mt-2 text-lg text-dark-600 dark:text-dark-300"
             >
               {subtitle}
             </motion.p>

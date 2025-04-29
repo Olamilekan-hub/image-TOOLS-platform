@@ -35,16 +35,16 @@ const Loading = ({
   
   // Determine the color class
   const colorClasses = {
-    primary: 'text-primary-500',
-    secondary: 'text-secondary-500',
-    accent: 'text-accent-500',
+    primary: 'text-primary-600 dark:text-primary-500',
+    secondary: 'text-secondary-600 dark:text-secondary-500',
+    accent: 'text-accent-600 dark:text-accent-500',
     white: 'text-white',
   };
   
   // Create the container class
   const containerClasses = `
     ${fullscreen ? 'fixed inset-0 z-50' : 'relative'} 
-    ${overlay ? 'bg-dark-900/70 backdrop-blur-sm' : ''}
+    ${overlay ? 'bg-white/70 dark:bg-dark-900/70 backdrop-blur-sm' : ''}
     flex flex-col items-center justify-center
     ${className}
   `;
@@ -99,7 +99,7 @@ const Loading = ({
         
       case 'progress':
         return (
-          <div className={`h-1 bg-dark-700 rounded-full overflow-hidden ${size === 'xs' ? 'w-20' : size === 'sm' ? 'w-32' : size === 'md' ? 'w-48' : size === 'lg' ? 'w-64' : 'w-80'}`}>
+          <div className={`h-1 bg-light-200 dark:bg-dark-700 rounded-full overflow-hidden ${size === 'xs' ? 'w-20' : size === 'sm' ? 'w-32' : size === 'md' ? 'w-48' : size === 'lg' ? 'w-64' : 'w-80'}`}>
             <motion.div
               className={`h-full ${colorClasses[color]} bg-current`}
               initial={{ width: '0%' }}
@@ -157,7 +157,7 @@ Loading.Overlay = ({ children, loading, ...props }) => (
   <div className="relative">
     {children}
     {loading && (
-      <div className="absolute inset-0 flex items-center justify-center bg-dark-900/70 backdrop-blur-sm rounded-lg z-10">
+      <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/70 dark:bg-dark-900/70 backdrop-blur-sm">
         <Loading {...props} />
       </div>
     )}
