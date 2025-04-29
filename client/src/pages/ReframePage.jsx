@@ -1,14 +1,24 @@
 // client/src/pages/ReframePage.jsx
 import React, { useState } from 'react';
-import { FaCrop, FaImage, FaCrown } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FaCrop, 
+  FaImage, 
+  FaCrown,
+  FaRuler,
+  FaInfoCircle,
+  FaMobile,
+  FaDesktop,
+  FaTabletAlt
+} from 'react-icons/fa';
+
+// Import modern components
 import PageHeader from '../components/common/PageHeader';
 import FormWrapper from '../components/common/FormWrapper';
 import Button from '../components/common/Button';
 import FileInput from '../components/common/FileInput';
 import Select from '../components/common/Select';
 import ImageResult from '../components/common/ImageResult';
-import Loading from '../components/common/Loading';
 import Card from '../components/common/Card';
 import { useToast } from '../context/ToastContext';
 import api from '../services/api';
@@ -22,13 +32,10 @@ const ReframePage = () => {
     model: 'V_2'  // Default to V_2 for reframe
   });
   
-  // File state
+  // File and UI state
   const [imageFile, setImageFile] = useState(null);
-  
-  // Result state
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  // Premium notice modal state
   const [showPremiumNotice, setShowPremiumNotice] = useState(false);
   
   // Model options - V_2 standard and premium options
@@ -122,19 +129,72 @@ const ReframePage = () => {
     }
   };
   
+  // Device use cases
+  const deviceUseCases = [
+    {
+      title: "Mobile",
+      description: "Create vertical 9:16 content perfect for mobile stories, reels, and TikTok videos.",
+      icon: <FaMobile size={24} />,
+      resolution: "768×1344"
+    },
+    {
+      title: "Desktop",
+      description: "Transform images into widescreen formats ideal for website banners and desktop applications.",
+      icon: <FaDesktop size={24} />,
+      resolution: "1344×768"
+    },
+    {
+      title: "Tablet",
+      description: "Optimize your visuals for tablet displays with the perfect 4:3 aspect ratio.",
+      icon: <FaTabletAlt size={24} />,
+      resolution: "1152×896"
+    }
+  ];
+  
   return (
-    <div className="container mx-auto px-4 pt-24 pb-16">
+    <div className="container px-4 pt-24 pb-16 mx-auto">
       <PageHeader
         title="Reframe Image"
         subtitle="Change the aspect ratio of your image while preserving content"
-        icon={<FaCrop size={28} />}
+        icon={<FaCrop size={30} />}
+        badge="AI Powered"
       />
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Device optimization cards */}
+      <div className="grid grid-cols-1 gap-6 mb-12 md:grid-cols-3">
+        {deviceUseCases.map((device, index) => (
+          <Card 
+            key={index} 
+            variant="glass" 
+            hover={true}
+            className="border-gradient"
+          >
+            <Card.Body>
+              <div className="flex items-start space-x-4">
+                <div className="p-3 rounded-lg bg-primary-500/10 text-primary-400">
+                  {device.icon}
+                </div>
+                <div>
+                  <h3 className="mb-2 font-medium text-white">{device.title}</h3>
+                  <p className="mb-2 text-sm text-dark-300">{device.description}</p>
+                  <span className="inline-block px-2 py-1 text-xs rounded bg-dark-700/60">
+                    {device.resolution}
+                  </span>
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
+        ))}
+      </div>
+      
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Form Section */}
         <FormWrapper
           title="Reframe Your Image"
           subtitle="Upload an image and select your desired aspect ratio"
+          variant="glass"
+          icon={<FaCrop size={18} />}
+          loading={loading}
         >
           <form onSubmit={handleSubmit}>
             <FileInput
@@ -142,9 +202,13 @@ const ReframePage = () => {
               id="image_file"
               accept="image/jpeg,image/png,image/webp"
               onChange={handleImageChange}
+              variant="glass"
+              helpText="Supported formats: JPEG, PNG, WebP (max 10MB)"
+              required={true}
+              dragDrop={true}
             />
             
-            <div className="mt-4">
+            <div className="mt-6">
               <Select
                 label="Target Resolution"
                 id="resolution"
@@ -152,10 +216,10 @@ const ReframePage = () => {
                 options={resolutionOptions}
                 value={formData.resolution}
                 onChange={handleChange}
+                variant="glass"
+                icon={<FaRuler size={14} />}
+                helpText="Select the resolution and aspect ratio you want for the output image"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Select the resolution and aspect ratio you want for the output image
-              </p>
             </div>
             
             <div className="mt-4">
@@ -166,21 +230,23 @@ const ReframePage = () => {
                 options={modelOptions}
                 value={formData.model}
                 onChange={handleChange}
+                variant="glass"
+                icon={<FaImage size={14} />}
+                helpText="V2 Standard model is recommended for reframing"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                V2 Standard model is recommended for reframing
-              </p>
             </div>
             
             <div className="mt-6">
               <Button 
                 type="submit"
+                variant="primary"
+                size="lg"
                 disabled={loading || !imageFile}
                 loading={loading}
                 className="w-full"
+                icon={<FaCrop />}
               >
-                <FaCrop className="mr-2" />
-                Reframe Image
+                {loading ? 'Processing...' : 'Reframe Image'}
               </Button>
             </div>
           </form>
@@ -189,25 +255,25 @@ const ReframePage = () => {
         {/* Result Section */}
         <div>
           {loading ? (
-            <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
-              <Loading size="lg" />
-              <p className="mt-4 text-gray-400">Reframing your image...</p>
+            <div className="flex flex-col items-center justify-center h-64 glass-card">
+              <div className="w-16 h-16 mb-4 border-t-4 border-b-4 rounded-full border-primary-500 animate-spin"></div>
+              <p className="text-lg text-white">Reframing your image...</p>
+              <p className="mt-2 text-sm text-dark-400">This may take a few moments</p>
             </div>
           ) : result ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <ImageResult 
-                imageData={result}
-              />
-            </motion.div>
+            <ImageResult 
+              imageData={result}
+            />
           ) : (
-            <div className="flex flex-col items-center justify-center bg-base-200 rounded-xl p-8 h-full min-h-[300px] border border-base-300 border-dashed">
-              <FaImage size={48} className="text-gray-600 mb-4" />
-              <p className="text-gray-400 text-center">
+            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px]">
+              <div className="p-6 mb-6 rounded-full bg-primary-500/10 animate-pulse-slow">
+                <FaCrop size={64} className="text-primary-500/60" />
+              </div>
+              <h3 className="mb-2 text-xl font-semibold text-white font-display">
                 Your reframed image will appear here
+              </h3>
+              <p className="max-w-md text-center text-dark-400">
+                Upload an image and select your desired aspect ratio
               </p>
             </div>
           )}
@@ -216,12 +282,16 @@ const ReframePage = () => {
       
       {/* About Reframing Section */}
       <div className="mt-16">
-        <h2 className="text-2xl font-bold mb-6">About Reframing</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
+        <div className="flex items-center mb-6">
+          <FaInfoCircle className="mr-3 text-primary-500" size={24} />
+          <h2 className="text-2xl font-bold font-display">About Reframing</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <Card variant="glass">
             <Card.Body>
               <Card.Title>What is Reframing?</Card.Title>
-              <p className="text-gray-400">
+              <p className="text-dark-300">
                 Reframing intelligently adapts your image to a new aspect ratio without awkward cropping or distortion. 
                 Unlike traditional resizing methods that can cut off important parts or stretch the image unnaturally, 
                 AI reframing uses advanced algorithms to preserve the main subject while extending the background or 
@@ -230,10 +300,10 @@ const ReframePage = () => {
             </Card.Body>
           </Card>
           
-          <Card>
+          <Card variant="glass">
             <Card.Body>
               <Card.Title>Common Use Cases</Card.Title>
-              <ul className="text-gray-400 space-y-2 list-disc pl-5">
+              <ul className="pl-5 space-y-2 list-disc text-dark-300">
                 <li>Convert landscape photos to portrait format for stories or social media</li>
                 <li>Adapt images to specific dimensions for websites, ads, or print materials</li>
                 <li>Create square versions of rectangular images for Instagram or profile pictures</li>
@@ -246,28 +316,48 @@ const ReframePage = () => {
       </div>
       
       {/* Premium Notice Modal */}
-      {showPremiumNotice && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <AnimatePresence>
+        {showPremiumNotice && (
           <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-base-200 rounded-xl p-8 max-w-md mx-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm"
+            onClick={closePremiumNotice}
           >
-            <div className="flex justify-center mb-4 text-yellow-400">
-              <FaCrown size={48} />
-            </div>
-            <h3 className="text-xl font-bold text-center mb-4">Premium Feature</h3>
-            <p className="text-gray-300 mb-6 text-center">
-              V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
-            </p>
-            <div className="flex justify-center">
-              <Button onClick={closePremiumNotice}>
-                Continue with Standard Models
-              </Button>
-            </div>
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="max-w-md p-8 mx-auto shadow-2xl bg-dark-800 rounded-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-center mb-6">
+                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/10">
+                  <FaCrown size={32} className="text-amber-500" />
+                </div>
+              </div>
+              
+              <h3 className="mb-3 text-2xl font-bold text-center font-display">Premium Feature</h3>
+              
+              <p className="mb-6 text-center text-dark-300">
+                V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
+              </p>
+              
+              <div className="flex justify-center">
+                <Button 
+                  onClick={closePremiumNotice}
+                  variant="glass"
+                  size="lg"
+                >
+                  Continue with Standard Models
+                </Button>
+              </div>
+            </motion.div>
           </motion.div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 };

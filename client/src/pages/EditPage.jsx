@@ -1,7 +1,16 @@
 // client/src/pages/EditPage.jsx
 import React, { useState } from 'react';
-import { FaPencilAlt, FaCrown } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FaPencilAlt, 
+  FaCrown, 
+  FaImage,
+  FaMagic,
+  FaInfoCircle,
+  FaLayerGroup
+} from 'react-icons/fa';
+
+// Import modern components
 import PageHeader from '../components/common/PageHeader';
 import FormWrapper from '../components/common/FormWrapper';
 import Button from '../components/common/Button';
@@ -9,7 +18,6 @@ import TextArea from '../components/common/TextArea';
 import FileInput from '../components/common/FileInput';
 import Select from '../components/common/Select';
 import ImageResult from '../components/common/ImageResult';
-import Loading from '../components/common/Loading';
 import Card from '../components/common/Card';
 import { useToast } from '../context/ToastContext';
 import api from '../services/api';
@@ -25,14 +33,10 @@ const EditPage = () => {
     magic_prompt_option: 'ON'
   });
   
-  // File state
+  // File and UI state
   const [imageFile, setImageFile] = useState(null);
-  
-  // Result state
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  
-  // Modal state for premium notification
   const [showPremiumNotice, setShowPremiumNotice] = useState(false);
   
   // Model options
@@ -93,6 +97,11 @@ const EditPage = () => {
     }
   };
   
+  // Close premium notice modal
+  const closePremiumNotice = () => {
+    setShowPremiumNotice(false);
+  };
+  
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -145,24 +154,23 @@ const EditPage = () => {
     }
   };
   
-  // Close premium notice modal
-  const closePremiumNotice = () => {
-    setShowPremiumNotice(false);
-  };
-  
   return (
-    <div className="container mx-auto px-4 pt-24 pb-16">
+    <div className="container px-4 pt-24 pb-16 mx-auto">
       <PageHeader
         title="Edit Image"
         subtitle="Upload an image and describe how you want to edit it"
-        icon={<FaPencilAlt size={28} />}
+        icon={<FaPencilAlt size={30} />}
+        badge="AI Powered"
       />
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Form Section */}
         <FormWrapper
-          title="Upload and Edit"
+          title="Upload & Edit"
           subtitle="Choose your image and describe your desired changes"
+          variant="glass"
+          icon={<FaPencilAlt size={18} />}
+          loading={loading}
         >
           <form onSubmit={handleSubmit}>
             <FileInput
@@ -170,21 +178,29 @@ const EditPage = () => {
               id="image_file"
               accept="image/jpeg,image/png,image/webp"
               onChange={handleImageChange}
+              variant="glass"
+              helpText="Supported formats: JPEG, PNG, WebP (max 10MB)"
+              required={true}
+              dragDrop={true}
             />
             
-            <div className="mt-4">
+            <div className="mt-6">
               <TextArea
-                label="Edit Prompt"
+                label="Edit Instructions"
                 id="prompt"
                 name="prompt"
                 rows={4}
                 placeholder="Describe how you want to transform this image. Add details about style, changes, and elements you want to add or modify."
                 value={formData.prompt}
                 onChange={handleChange}
+                variant="glass"
+                required={true}
+                showCount={true}
+                maxLength={1000}
               />
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2">
               <Select
                 label="Model"
                 id="model"
@@ -192,6 +208,8 @@ const EditPage = () => {
                 options={modelOptions}
                 value={formData.model}
                 onChange={handleChange}
+                variant="glass"
+                icon={<FaMagic size={14} />}
               />
               
               <Select
@@ -201,6 +219,8 @@ const EditPage = () => {
                 options={aspectRatioOptions}
                 value={formData.aspect_ratio}
                 onChange={handleChange}
+                variant="glass"
+                icon={<FaLayerGroup size={14} />}
               />
             </div>
             
@@ -212,21 +232,23 @@ const EditPage = () => {
                 options={magicPromptOptions}
                 value={formData.magic_prompt_option}
                 onChange={handleChange}
+                variant="glass"
+                icon={<FaInfoCircle size={14} />}
+                helpText="Magic Prompt enhances your input by adding details to improve image quality"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Magic Prompt enhances your input by adding details to improve image quality
-              </p>
             </div>
             
             <div className="mt-6">
               <Button 
                 type="submit"
+                variant="primary"
+                size="lg"
                 disabled={loading || !formData.prompt.trim() || !imageFile}
                 loading={loading}
                 className="w-full"
+                icon={<FaPencilAlt />}
               >
-                <FaPencilAlt className="mr-2" />
-                Edit Image
+                {loading ? 'Editing...' : 'Edit Image'}
               </Button>
             </div>
           </form>
@@ -235,61 +257,77 @@ const EditPage = () => {
         {/* Result Section */}
         <div>
           {loading ? (
-            <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
-              <Loading size="lg" />
-              <p className="mt-4 text-gray-400">Editing your image...</p>
+            <div className="flex flex-col items-center justify-center h-64 glass-card">
+              <div className="w-16 h-16 mb-4 border-t-4 border-b-4 rounded-full border-primary-500 animate-spin"></div>
+              <p className="text-lg text-white">Editing your image...</p>
+              <p className="mt-2 text-sm text-dark-400">This may take a few moments</p>
             </div>
           ) : result ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <ImageResult 
-                imageData={result} 
-                prompt={formData.prompt}
-              />
-            </motion.div>
+            <ImageResult 
+              imageData={result} 
+              prompt={formData.prompt}
+            />
           ) : (
-            <div className="flex flex-col items-center justify-center bg-base-200 rounded-xl p-8 h-full min-h-[300px] border border-base-300 border-dashed">
-              <FaPencilAlt size={48} className="text-gray-600 mb-4" />
-              <p className="text-gray-400 text-center">
+            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px]">
+              <div className="p-6 mb-6 rounded-full bg-primary-500/10 animate-pulse-slow">
+                <FaImage size={64} className="text-primary-500/60" />
+              </div>
+              <h3 className="mb-2 text-xl font-semibold text-white font-display">
                 Your edited image will appear here
+              </h3>
+              <p className="max-w-md text-center text-dark-400">
+                Upload an image and add edit instructions to transform it with AI
               </p>
             </div>
           )}
         </div>
       </div>
       
-      {/* Instructions Section */}
+      {/* How-to Instructions Section */}
       <div className="mt-16">
-        <h2 className="text-2xl font-bold mb-6">How to Edit Images</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
+        <div className="flex items-center mb-6">
+          <FaInfoCircle className="mr-3 text-primary-500" size={24} />
+          <h2 className="text-2xl font-bold font-display">How to Edit Images</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <Card variant="glass">
             <Card.Body>
-              <div className="text-accent text-4xl font-bold mb-2">1</div>
-              <Card.Title>Upload Your Image</Card.Title>
-              <p className="text-gray-400">
+              <div className="flex justify-center mb-4">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary-500/10">
+                  <span className="text-xl font-bold text-primary-400">1</span>
+                </div>
+              </div>
+              <Card.Title className="text-center">Upload Your Image</Card.Title>
+              <p className="text-center text-dark-300">
                 Start by uploading the image you want to edit. Supported formats are JPEG, PNG, and WebP.
               </p>
             </Card.Body>
           </Card>
           
-          <Card>
+          <Card variant="glass">
             <Card.Body>
-              <div className="text-accent text-4xl font-bold mb-2">2</div>
-              <Card.Title>Describe Your Changes</Card.Title>
-              <p className="text-gray-400">
+              <div className="flex justify-center mb-4">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-secondary-500/10">
+                  <span className="text-xl font-bold text-secondary-400">2</span>
+                </div>
+              </div>
+              <Card.Title className="text-center">Describe Your Changes</Card.Title>
+              <p className="text-center text-dark-300">
                 Clearly describe how you want to edit the image. Be specific about what elements to change, add, or modify.
               </p>
             </Card.Body>
           </Card>
           
-          <Card>
+          <Card variant="glass">
             <Card.Body>
-              <div className="text-accent text-4xl font-bold mb-2">3</div>
-              <Card.Title>Choose Settings</Card.Title>
-              <p className="text-gray-400">
+              <div className="flex justify-center mb-4">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-accent-500/10">
+                  <span className="text-xl font-bold text-accent-400">3</span>
+                </div>
+              </div>
+              <Card.Title className="text-center">Choose Settings</Card.Title>
+              <p className="text-center text-dark-300">
                 Select your preferred model, aspect ratio, and whether to use magic prompt enhancement, then generate your edited image.
               </p>
             </Card.Body>
@@ -298,28 +336,48 @@ const EditPage = () => {
       </div>
       
       {/* Premium Notice Modal */}
-      {showPremiumNotice && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <AnimatePresence>
+        {showPremiumNotice && (
           <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-base-200 rounded-xl p-8 max-w-md mx-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm"
+            onClick={closePremiumNotice}
           >
-            <div className="flex justify-center mb-4 text-yellow-400">
-              <FaCrown size={48} />
-            </div>
-            <h3 className="text-xl font-bold text-center mb-4">Premium Feature</h3>
-            <p className="text-gray-300 mb-6 text-center">
-              V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
-            </p>
-            <div className="flex justify-center">
-              <Button onClick={closePremiumNotice}>
-                Continue with Standard Models
-              </Button>
-            </div>
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="max-w-md p-8 mx-auto shadow-2xl bg-dark-800 rounded-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-center mb-6">
+                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/10">
+                  <FaCrown size={32} className="text-amber-500" />
+                </div>
+              </div>
+              
+              <h3 className="mb-3 text-2xl font-bold text-center font-display">Premium Feature</h3>
+              
+              <p className="mb-6 text-center text-dark-300">
+                V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
+              </p>
+              
+              <div className="flex justify-center">
+                <Button 
+                  onClick={closePremiumNotice}
+                  variant="glass"
+                  size="lg"
+                >
+                  Continue with Standard Models
+                </Button>
+              </div>
+            </motion.div>
           </motion.div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 };

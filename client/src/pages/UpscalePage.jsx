@@ -1,7 +1,17 @@
 // client/src/pages/UpscalePage.jsx
 import React, { useState } from 'react';
-import { FaExpandArrowsAlt, FaCrown } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FaExpandArrowsAlt, 
+  FaCrown, 
+  FaImage,
+  FaMagic,
+  FaInfoCircle,
+  FaStar,
+  FaArrowUp
+} from 'react-icons/fa';
+
+// Import modern components
 import PageHeader from '../components/common/PageHeader';
 import FormWrapper from '../components/common/FormWrapper';
 import Button from '../components/common/Button';
@@ -9,7 +19,6 @@ import TextArea from '../components/common/TextArea';
 import FileInput from '../components/common/FileInput';
 import Select from '../components/common/Select';
 import ImageResult from '../components/common/ImageResult';
-import Loading from '../components/common/Loading';
 import Card from '../components/common/Card';
 import { useToast } from '../context/ToastContext';
 import api from '../services/api';
@@ -23,13 +32,10 @@ const UpscalePage = () => {
     model: 'V_2A',
   });
   
-  // File state
+  // File and UI state
   const [imageFile, setImageFile] = useState(null);
-  
-  // Result state
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  // Premium notice modal state
   const [showPremiumNotice, setShowPremiumNotice] = useState(false);
   
   // Model options
@@ -61,16 +67,16 @@ const UpscalePage = () => {
     });
   };
   
-  // Close premium notice modal
-  const closePremiumNotice = () => {
-    setShowPremiumNotice(false);
-  };
-  
   // Handle image file change
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
     }
+  };
+  
+  // Close premium notice modal
+  const closePremiumNotice = () => {
+    setShowPremiumNotice(false);
   };
   
   // Handle form submission
@@ -119,19 +125,65 @@ const UpscalePage = () => {
     }
   };
   
+  // Features for the information cards
+  const features = [
+    {
+      title: "Enhanced Resolution",
+      description: "Increase the size and quality of your images without losing details or clarity.",
+      icon: <FaExpandArrowsAlt />
+    },
+    {
+      title: "AI-Powered Enhancement",
+      description: "Our AI not only enlarges but also improves textures, details, and sharpness.",
+      icon: <FaMagic />
+    },
+    {
+      title: "Premium Quality",
+      description: "Get professional-grade results suitable for printing, large displays, and marketing materials.",
+      icon: <FaStar />
+    }
+  ];
+  
   return (
-    <div className="container mx-auto px-4 pt-24 pb-16">
+    <div className="container px-4 pt-24 pb-16 mx-auto">
       <PageHeader
         title="Upscale Image"
-        subtitle="Enhance your image resolution while preserving quality"
-        icon={<FaExpandArrowsAlt size={28} />}
+        subtitle="Enhance your image quality and resolution with AI"
+        icon={<FaExpandArrowsAlt size={30} />}
+        badge="AI Enhancement"
       />
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Feature highlights */}
+      <div className="grid grid-cols-1 gap-6 mb-12 md:grid-cols-3">
+        {features.map((feature, index) => (
+          <Card 
+            key={index} 
+            variant="glass" 
+            className="border-gradient"
+          >
+            <Card.Body>
+              <div className="flex items-start space-x-4">
+                <div className="p-3 rounded-lg bg-primary-500/10 text-primary-400">
+                  {feature.icon}
+                </div>
+                <div>
+                  <h3 className="mb-2 font-medium text-white">{feature.title}</h3>
+                  <p className="text-sm text-dark-300">{feature.description}</p>
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
+        ))}
+      </div>
+      
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Form Section */}
         <FormWrapper
           title="Upscale Your Image"
           subtitle="Upload an image to enhance its resolution and quality"
+          variant="glass"
+          icon={<FaExpandArrowsAlt size={18} />}
+          loading={loading}
         >
           <form onSubmit={handleSubmit}>
             <FileInput
@@ -139,46 +191,51 @@ const UpscalePage = () => {
               id="image_file"
               accept="image/jpeg,image/png,image/webp"
               onChange={handleImageChange}
+              variant="glass"
+              helpText="Supported formats: JPEG, PNG, WebP (max 10MB)"
+              required={true}
+              dragDrop={true}
             />
             
-            <div className="mt-4">
+            <div className="mt-6">
               <TextArea
-                label="Optional Prompt"
+                label="Optional Enhancement Prompt"
                 id="prompt"
                 name="prompt"
                 rows={3}
                 placeholder="Add an optional prompt to guide the upscaling process (e.g., 'Enhance details in the face' or 'Improve texture quality')"
                 value={formData.prompt}
                 onChange={handleChange}
+                variant="glass"
+                helpText="A prompt is optional for upscaling, but can help guide the enhancement process"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                A prompt is optional for upscaling, but can help guide the enhancement process
-              </p>
             </div>
             
-            <div className="mt-4">
+            <div className="mt-6">
               <Select
-                label="Model"
+                label="AI Model"
                 id="model"
                 name="model"
                 options={modelOptions}
                 value={formData.model}
                 onChange={handleChange}
+                variant="glass"
+                icon={<FaMagic size={14} />}
+                helpText="Select the model to use for upscaling"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Select the model to use for upscaling
-              </p>
             </div>
             
             <div className="mt-6">
               <Button 
                 type="submit"
+                variant="primary"
+                size="lg"
                 disabled={loading || !imageFile}
                 loading={loading}
                 className="w-full"
+                icon={<FaExpandArrowsAlt />}
               >
-                <FaExpandArrowsAlt className="mr-2" />
-                Upscale Image
+                {loading ? 'Processing...' : 'Upscale Image'}
               </Button>
             </div>
           </form>
@@ -187,26 +244,26 @@ const UpscalePage = () => {
         {/* Result Section */}
         <div>
           {loading ? (
-            <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
-              <Loading size="lg" />
-              <p className="mt-4 text-gray-400">Upscaling your image...</p>
+            <div className="flex flex-col items-center justify-center h-64 glass-card">
+              <div className="w-16 h-16 mb-4 border-t-4 border-b-4 rounded-full border-primary-500 animate-spin"></div>
+              <p className="text-lg text-white">Upscaling your image...</p>
+              <p className="mt-2 text-sm text-dark-400">This may take a few moments</p>
             </div>
           ) : result ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <ImageResult 
-                imageData={result} 
-                prompt={formData.prompt}
-              />
-            </motion.div>
+            <ImageResult 
+              imageData={result} 
+              prompt={formData.prompt}
+            />
           ) : (
-            <div className="flex flex-col items-center justify-center bg-base-200 rounded-xl p-8 h-full min-h-[300px] border border-base-300 border-dashed">
-              <FaExpandArrowsAlt size={48} className="text-gray-600 mb-4" />
-              <p className="text-gray-400 text-center">
+            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px]">
+              <div className="p-6 mb-6 rounded-full bg-primary-500/10 animate-pulse-slow">
+                <FaArrowUp size={64} className="text-primary-500/60" />
+              </div>
+              <h3 className="mb-2 text-xl font-semibold text-white font-display">
                 Your upscaled image will appear here
+              </h3>
+              <p className="max-w-md text-center text-dark-400">
+                Upload an image to enhance its resolution and quality with AI
               </p>
             </div>
           )}
@@ -215,22 +272,26 @@ const UpscalePage = () => {
       
       {/* Information Section */}
       <div className="mt-16">
-        <h2 className="text-2xl font-bold mb-6">About Upscaling</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
+        <div className="flex items-center mb-6">
+          <FaInfoCircle className="mr-3 text-primary-500" size={24} />
+          <h2 className="text-2xl font-bold font-display">About Upscaling</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <Card variant="glass">
             <Card.Body>
               <Card.Title>What is Upscaling?</Card.Title>
-              <p className="text-gray-400">
+              <p className="text-dark-300">
                 Upscaling uses AI to increase image resolution while enhancing details and sharpness. 
                 Unlike traditional resizing which can blur images, AI upscaling intelligently adds detail.
               </p>
             </Card.Body>
           </Card>
           
-          <Card>
+          <Card variant="glass">
             <Card.Body>
               <Card.Title>Best Practices</Card.Title>
-              <ul className="text-gray-400 space-y-2 list-disc pl-5">
+              <ul className="pl-5 space-y-2 list-disc text-dark-300">
                 <li>Start with the highest quality image available</li>
                 <li>Images should be clear and well-composed</li>
                 <li>Add optional prompts to guide enhancement focus</li>
@@ -239,10 +300,10 @@ const UpscalePage = () => {
             </Card.Body>
           </Card>
           
-          <Card>
+          <Card variant="glass">
             <Card.Body>
               <Card.Title>Use Cases</Card.Title>
-              <ul className="text-gray-400 space-y-2 list-disc pl-5">
+              <ul className="pl-5 space-y-2 list-disc text-dark-300">
                 <li>Enhance old or low-resolution photos</li>
                 <li>Prepare images for large-format printing</li>
                 <li>Improve social media and website visuals</li>
@@ -254,28 +315,48 @@ const UpscalePage = () => {
       </div>
       
       {/* Premium Notice Modal */}
-      {showPremiumNotice && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <AnimatePresence>
+        {showPremiumNotice && (
           <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-base-200 rounded-xl p-8 max-w-md mx-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm"
+            onClick={closePremiumNotice}
           >
-            <div className="flex justify-center mb-4 text-yellow-400">
-              <FaCrown size={48} />
-            </div>
-            <h3 className="text-xl font-bold text-center mb-4">Premium Feature</h3>
-            <p className="text-gray-300 mb-6 text-center">
-              V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
-            </p>
-            <div className="flex justify-center">
-              <Button onClick={closePremiumNotice}>
-                Continue with Standard Models
-              </Button>
-            </div>
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="max-w-md p-8 mx-auto shadow-2xl bg-dark-800 rounded-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-center mb-6">
+                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/10">
+                  <FaCrown size={32} className="text-amber-500" />
+                </div>
+              </div>
+              
+              <h3 className="mb-3 text-2xl font-bold text-center font-display">Premium Feature</h3>
+              
+              <p className="mb-6 text-center text-dark-300">
+                V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
+              </p>
+              
+              <div className="flex justify-center">
+                <Button 
+                  onClick={closePremiumNotice}
+                  variant="glass"
+                  size="lg"
+                >
+                  Continue with Standard Models
+                </Button>
+              </div>
+            </motion.div>
           </motion.div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 };

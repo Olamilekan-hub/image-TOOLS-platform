@@ -1,13 +1,23 @@
 // client/src/pages/DescribePage.jsx
 import React, { useState } from 'react';
-import { FaComment, FaImage, FaClipboard } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FaComment, 
+  FaImage, 
+  FaClipboard,
+  FaCheck,
+  FaInfoCircle,
+  FaFileAlt,
+  FaSearch,
+  FaLightbulb
+} from 'react-icons/fa';
+
+// Import modern components
 import PageHeader from '../components/common/PageHeader';
 import FormWrapper from '../components/common/FormWrapper';
 import Button from '../components/common/Button';
 import FileInput from '../components/common/FileInput';
 import Card from '../components/common/Card';
-import Loading from '../components/common/Loading';
 import { useToast } from '../context/ToastContext';
 import api from '../services/api';
 
@@ -17,9 +27,10 @@ const DescribePage = () => {
   // File state
   const [imageFile, setImageFile] = useState(null);
   
-  // Result state
+  // UI state
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [copiedIndex, setCopiedIndex] = useState(null);
   
   // Handle image file change
   const handleImageChange = (e) => {
@@ -29,10 +40,12 @@ const DescribePage = () => {
   };
   
   // Copy description to clipboard
-  const copyToClipboard = (text) => {
+  const copyToClipboard = (text, index) => {
     navigator.clipboard.writeText(text).then(
       () => {
         addToast('Description copied to clipboard!', 'success');
+        setCopiedIndex(index);
+        setTimeout(() => setCopiedIndex(null), 2000);
       },
       (err) => {
         addToast('Failed to copy to clipboard', 'error');
@@ -78,19 +91,131 @@ const DescribePage = () => {
     }
   };
   
+  // Placeholder for empty results section
+  const EmptyResults = () => (
+    <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px]">
+      <div className="p-6 mb-6 rounded-full bg-primary-500/10 animate-pulse-slow">
+        <FaComment size={64} className="text-primary-500/60" />
+      </div>
+      <h3 className="mb-2 text-xl font-semibold text-white font-display">
+        AI-generated descriptions will appear here
+      </h3>
+      <p className="max-w-md text-center text-dark-400">
+        Upload an image to get detailed descriptions of its content
+      </p>
+    </div>
+  );
+  
+  // Loading state component
+  const LoadingState = () => (
+    <div className="flex flex-col items-center justify-center h-64 glass-card">
+      <div className="w-16 h-16 mb-4 border-t-4 border-b-4 rounded-full border-primary-500 animate-spin"></div>
+      <p className="text-lg text-white">Analyzing your image...</p>
+      <p className="mt-2 text-sm text-dark-400">AI is examining the content</p>
+    </div>
+  );
+  
+  // Results component
+  const Results = ({ data, imageUrl }) => {
+    if (!data || !data.data || !data.data.descriptions || data.data.descriptions.length === 0) {
+      return (
+        <div className="p-6 glass-card">
+          <div className="flex items-center justify-center">
+            <FaInfoCircle className="mr-2 text-amber-500" />
+            <p className="text-dark-300">No descriptions were generated for this image.</p>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="overflow-hidden glass-card"
+      >
+        {imageUrl && (
+          <div className="w-full h-48 overflow-hidden border-b border-dark-700/50">
+            <img 
+              src={imageUrl} 
+              alt="Uploaded" 
+              className="object-cover w-full h-full"
+            />
+          </div>
+        )}
+        
+        <div className="p-6">
+          <h3 className="flex items-center mb-4 text-lg font-semibold font-display">
+            <FaFileAlt className="mr-2 text-primary-400" />
+            Generated Descriptions
+          </h3>
+          
+          <div className="space-y-4">
+            {data.data.descriptions.map((description, index) => (
+              <div 
+                key={index}
+                className="relative p-4 rounded-lg bg-dark-800/70 group"
+              >
+                <p className="text-sm text-dark-200">
+                  {description.text}
+                </p>
+                
+                <div className="absolute top-3 right-3">
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="transition-opacity opacity-0 group-hover:opacity-100"
+                    onClick={() => copyToClipboard(description.text, index)}
+                    icon={copiedIndex === index ? <FaCheck size={12} /> : <FaClipboard size={12} />}
+                  >
+                    {copiedIndex === index ? 'Copied' : 'Copy'}
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    );
+  };
+  
+  // Use cases array
+  const useCases = [
+    {
+      title: "Content Creation",
+      description: "Generate detailed image descriptions for blog posts, articles, and social media content. Perfect for creating alt text for better accessibility.",
+      icon: <FaFileAlt />
+    },
+    {
+      title: "SEO Enhancement",
+      description: "Improve image SEO by using AI-generated descriptions as metadata, helping search engines better understand your visual content.",
+      icon: <FaSearch />
+    },
+    {
+      title: "Creative Inspiration",
+      description: "Get fresh perspectives on images to inspire your writing, design work, or creative projects. Discover elements you might have overlooked.",
+      icon: <FaLightbulb />
+    }
+  ];
+  
   return (
-    <div className="container mx-auto px-4 pt-24 pb-16">
+    <div className="container px-4 pt-24 pb-16 mx-auto">
       <PageHeader
         title="Describe Image"
         subtitle="Get detailed AI-generated descriptions of any image"
-        icon={<FaComment size={28} />}
+        icon={<FaComment size={30} />}
+        badge="AI Analysis"
       />
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Form Section */}
         <FormWrapper
           title="Upload an Image"
           subtitle="Get an AI-generated description of your image's content"
+          variant="glass"
+          icon={<FaImage size={18} />}
+          loading={loading}
         >
           <form onSubmit={handleSubmit}>
             <FileInput
@@ -98,23 +223,32 @@ const DescribePage = () => {
               id="image_file"
               accept="image/jpeg,image/png,image/webp"
               onChange={handleImageChange}
+              variant="glass"
+              helpText="Supported formats: JPEG, PNG, WebP (max 10MB)"
+              required={true}
+              dragDrop={true}
             />
             
             <div className="mt-6">
               <Button 
                 type="submit"
+                variant="primary"
+                size="lg"
                 disabled={loading || !imageFile}
                 loading={loading}
                 className="w-full"
+                icon={<FaComment />}
               >
-                <FaComment className="mr-2" />
-                Generate Description
+                {loading ? 'Analyzing...' : 'Generate Description'}
               </Button>
             </div>
             
-            <div className="mt-4 text-xs text-gray-500">
-              <p className="mb-1">What to expect:</p>
-              <ul className="list-disc pl-5 space-y-1">
+            <div className="p-4 mt-4 border rounded-lg bg-dark-800/50 border-dark-700/30">
+              <h4 className="flex items-center mb-2 text-sm font-medium text-white">
+                <FaInfoCircle className="mr-2 text-primary-400" />
+                What to expect:
+              </h4>
+              <ul className="ml-6 space-y-1 text-xs list-disc text-dark-300">
                 <li>Detailed descriptions of objects, people, and settings in the image</li>
                 <li>Visual attributes like colors, textures, and styles</li>
                 <li>Context and setting of the image</li>
@@ -127,93 +261,41 @@ const DescribePage = () => {
         {/* Result Section */}
         <div>
           {loading ? (
-            <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
-              <Loading size="lg" />
-              <p className="mt-4 text-gray-400">Analyzing your image...</p>
-            </div>
-          ) : result && result.data?.descriptions?.length > 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="space-y-4"
-            >
-              <div className="bg-base-200 rounded-xl overflow-hidden">
-                {imageFile && (
-                  <div className="w-full h-48 overflow-hidden">
-                    <img 
-                      src={URL.createObjectURL(imageFile)} 
-                      alt="Uploaded image" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold mb-4">Generated Descriptions</h3>
-                  <div className="space-y-4">
-                    {result.data.descriptions.map((description, index) => (
-                      <div 
-                        key={index}
-                        className="bg-base-300 p-3 rounded-md relative group"
-                      >
-                        <p className="text-white mb-2">{description.text}</p>
-                        
-                        <Button
-                          variant="ghost"
-                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                          onClick={() => copyToClipboard(description.text)}
-                          title="Copy to clipboard"
-                        >
-                          <FaClipboard size={16} />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+            <LoadingState />
+          ) : result ? (
+            <Results 
+              data={result} 
+              imageUrl={imageFile ? URL.createObjectURL(imageFile) : null}
+            />
           ) : (
-            <div className="flex flex-col items-center justify-center bg-base-200 rounded-xl p-8 h-full min-h-[300px] border border-base-300 border-dashed">
-              <FaImage size={48} className="text-gray-600 mb-4" />
-              <p className="text-gray-400 text-center">
-                Descriptions of your image will appear here
-              </p>
-            </div>
+            <EmptyResults />
           )}
         </div>
       </div>
       
       {/* Use Cases Section */}
       <div className="mt-16">
-        <h2 className="text-2xl font-bold mb-6">Use Cases</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
-            <Card.Body>
-              <Card.Title>Content Creation</Card.Title>
-              <p className="text-gray-400">
-                Generate detailed image descriptions for blog posts, articles, and social media content. Perfect for creating alt text for better accessibility.
-              </p>
-            </Card.Body>
-          </Card>
-          
-          <Card>
-            <Card.Body>
-              <Card.Title>SEO Enhancement</Card.Title>
-              <p className="text-gray-400">
-                Improve image SEO by using AI-generated descriptions as metadata, helping search engines better understand your visual content.
-              </p>
-            </Card.Body>
-          </Card>
-          
-          <Card>
-            <Card.Body>
-              <Card.Title>Creative Inspiration</Card.Title>
-              <p className="text-gray-400">
-                Get fresh perspectives on images to inspire your writing, design work, or creative projects. Discover elements you might have overlooked.
-              </p>
-            </Card.Body>
-          </Card>
+        <div className="flex items-center mb-6">
+          <FaInfoCircle className="mr-3 text-primary-500" size={24} />
+          <h2 className="text-2xl font-bold font-display">Use Cases</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {useCases.map((useCase, index) => (
+            <Card key={index} variant="glass">
+              <Card.Body>
+                <div className="flex justify-center mb-4">
+                  <span className="p-3 rounded-full bg-gradient-to-br from-primary-500/10 to-secondary-500/10 text-primary-400">
+                    {useCase.icon}
+                  </span>
+                </div>
+                <Card.Title className="text-center">{useCase.title}</Card.Title>
+                <p className="text-center text-dark-300">
+                  {useCase.description}
+                </p>
+              </Card.Body>
+            </Card>
+          ))}
         </div>
       </div>
     </div>

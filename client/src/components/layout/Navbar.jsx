@@ -1,12 +1,36 @@
 // client/src/components/layout/Navbar.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaBars, FaTimes } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FaBars, 
+  FaTimes, 
+  FaImage, 
+  FaPencilAlt,
+  FaMagic,
+  FaExpandArrowsAlt,
+  FaComment,
+  FaCrop
+} from 'react-icons/fa';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [scrolled]);
   
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -17,109 +41,107 @@ const Navbar = () => {
   };
   
   const isActive = (path) => {
-    return location.pathname === path ? 'bg-primary/20 text-white' : 'text-gray-300 hover:text-white hover:bg-primary/10';
+    return location.pathname === path;
   };
+
+  const navLinks = [
+    { path: '/', label: 'Home', icon: null },
+    { path: '/generate', label: 'Generate', icon: <FaImage /> },
+    { path: '/edit', label: 'Edit', icon: <FaPencilAlt /> },
+    { path: '/remix', label: 'Remix', icon: <FaMagic /> },
+    { path: '/upscale', label: 'Upscale', icon: <FaExpandArrowsAlt /> },
+    { path: '/describe', label: 'Describe', icon: <FaComment /> },
+    { path: '/reframe', label: 'Reframe', icon: <FaCrop /> },
+  ];
   
   return (
-    <nav className="bg-base-300 shadow-md py-3 px-4 sm:px-6 fixed w-full top-0 z-50">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="flex items-center space-x-2" onClick={closeMenu}>
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <span className="text-white font-bold text-xl">I</span>
+    <nav 
+      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+        scrolled 
+          ? 'py-2 bg-dark-900/80 backdrop-blur-md shadow-md' 
+          : 'py-4 bg-transparent'
+      }`}
+    >
+      <div className="container px-4 mx-auto sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2 group" onClick={closeMenu}>
+            <div className="relative flex items-center justify-center w-10 h-10">
+              <div className="absolute inset-0 transition-opacity duration-300 rounded-lg bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 opacity-80 group-hover:opacity-100"></div>
+              <span className="relative text-xl font-bold text-white font-display">I</span>
+            </div>
+            <span className="text-xl font-bold text-transparent transition-all duration-300 bg-clip-text bg-gradient-to-r from-primary-400 via-secondary-400 to-accent-400 group-hover:from-primary-300 group-hover:via-secondary-300 group-hover:to-accent-300">
+              IdeogramAI
+            </span>
+          </Link>
+          
+          {/* Desktop Menu */}
+          <div className="items-center hidden space-x-1 md:flex">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`px-3 py-2 rounded-lg flex items-center space-x-1 text-sm font-medium transition-all duration-200 ${
+                  isActive(link.path)
+                    ? 'bg-dark-700/70 text-white relative before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-full before:bg-gradient-to-r before:from-primary-500 before:to-secondary-500'
+                    : 'text-dark-300 hover:text-white hover:bg-dark-700/40'
+                }`}
+              >
+                {link.icon && <span className="text-primary-400">{link.icon}</span>}
+                <span>{link.label}</span>
+              </Link>
+            ))}
           </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            IdeogramAI
-          </span>
-        </Link>
-        
-        {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-1">
-          <Link to="/" className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${isActive('/')}`}>
-            Home
-          </Link>
-          <Link to="/generate" className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${isActive('/generate')}`}>
-            Generate
-          </Link>
-          <Link to="/edit" className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${isActive('/edit')}`}>
-            Edit
-          </Link>
-          <Link to="/upscale" className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${isActive('/upscale')}`}>
-            Upscale
-          </Link>
-          <Link to="/describe" className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${isActive('/describe')}`}>
-            Describe
-          </Link>
-          <Link to="/reframe" className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${isActive('/reframe')}`}>
-            Reframe
-          </Link>
-        </div>
-        
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
-          <button 
-            onClick={toggleMenu} 
-            className="text-white focus:outline-none"
-          >
-            {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-          </button>
+          
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button 
+              onClick={toggleMenu} 
+              className="p-2 text-white transition-colors rounded-lg focus:outline-none hover:bg-dark-800/50"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+            >
+              {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+            </button>
+          </div>
         </div>
       </div>
       
       {/* Mobile Menu */}
-      {isOpen && (
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.2 }}
-          className="md:hidden bg-base-300 shadow-lg rounded-b-lg mt-2"
-        >
-          <div className="px-4 py-2 space-y-1">
-            <Link 
-              to="/" 
-              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/')}`}
-              onClick={closeMenu}
-            >
-              Home
-            </Link>
-            <Link 
-              to="/generate" 
-              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/generate')}`}
-              onClick={closeMenu}
-            >
-              Generate
-            </Link>
-            <Link 
-              to="/edit" 
-              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/edit')}`}
-              onClick={closeMenu}
-            >
-              Edit
-            </Link>
-            <Link 
-              to="/upscale" 
-              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/upscale')}`}
-              onClick={closeMenu}
-            >
-              Upscale
-            </Link>
-            <Link 
-              to="/describe" 
-              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/describe')}`}
-              onClick={closeMenu}
-            >
-              Describe
-            </Link>
-            <Link 
-              to="/reframe" 
-              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/reframe')}`}
-              onClick={closeMenu}
-            >
-              Reframe
-            </Link>
-          </div>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="border-t shadow-lg md:hidden bg-dark-900/95 backdrop-blur-md border-dark-700"
+          >
+            <div className="container px-4 py-3 mx-auto space-y-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 ${
+                    isActive(link.path)
+                      ? 'bg-dark-700/70 text-white'
+                      : 'text-dark-300 hover:text-white hover:bg-dark-700/40'
+                  }`}
+                  onClick={closeMenu}
+                >
+                  {link.icon ? (
+                    <span className={`${isActive(link.path) ? 'text-primary-400' : 'text-dark-400'}`}>
+                      {link.icon}
+                    </span>
+                  ) : (
+                    <span className="w-4"></span> // Empty span for alignment
+                  )}
+                  <span>{link.label}</span>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
