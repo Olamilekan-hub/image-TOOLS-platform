@@ -53,7 +53,7 @@ const Footer = () => {
       <div className="w-full h-px bg-gradient-to-r from-transparent via-light-300 dark:via-dark-700 to-transparent"></div>
       
       {/* Background with blur effects */}
-      <div className="absolute inset-0 bg-light-100/80 dark:bg-dark-900/80 backdrop-blur-sm -z-10"></div>
+      <div className="absolute inset-0 bg-white/90 dark:bg-dark-900/90 backdrop-blur-sm -z-10"></div>
       <div className="absolute rounded-full -top-40 -right-40 w-80 h-80 bg-primary-500/5 blur-3xl"></div>
       <div className="absolute rounded-full -bottom-20 -left-20 w-60 h-60 bg-accent-500/5 blur-3xl"></div>
       
@@ -69,7 +69,7 @@ const Footer = () => {
                 Pixy AI
               </span>
             </div>
-            <p className="max-w-sm mb-6 text-light-600 dark:text-dark-300">
+            <p className="max-w-sm mb-6 text-dark-500 dark:text-dark-300">
               Powerful AI platform for creating, editing, and transforming images with intuitive tools powered by state-of-the-art models.
             </p>
             <div className="flex space-x-3">
@@ -77,7 +77,7 @@ const Footer = () => {
                 <a 
                   key={index}
                   href={link.href}
-                  className="flex items-center justify-center w-10 h-10 transition-colors bg-white border rounded-lg text-light-500 dark:text-dark-400 hover:text-light-900 dark:hover:text-white dark:bg-dark-800 hover:bg-light-200 dark:hover:bg-dark-700 border-light-200 dark:border-dark-700 hover:border-light-300 dark:hover:border-dark-600"
+                  className="flex items-center justify-center w-10 h-10 transition-colors border rounded-lg text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white bg-light-100 dark:bg-dark-800 hover:bg-light-200 dark:hover:bg-dark-700 border-light-200 dark:border-dark-700"
                   aria-label={link.label}
                 >
                   {link.icon}
@@ -89,7 +89,7 @@ const Footer = () => {
           {/* Navigation sections */}
           {sections.map((section, index) => (
             <div key={index}>
-              <h3 className="mb-4 text-base font-semibold font-display text-light-900 dark:text-white">
+              <h3 className="mb-4 text-base font-semibold font-display text-dark-800 dark:text-white">
                 {section.title}
               </h3>
               <ul className="space-y-2">
@@ -97,7 +97,7 @@ const Footer = () => {
                   <li key={linkIndex}>
                     <Link 
                       to={link.path} 
-                      className="text-sm transition-colors text-light-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400"
+                      className="text-sm transition-colors text-dark-500 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400"
                     >
                       {link.name}
                     </Link>
@@ -110,25 +110,25 @@ const Footer = () => {
         
         {/* Bottom section with copyright and legal links */}
         <div className="flex flex-col items-center justify-between pt-8 border-t border-light-200 dark:border-dark-800 md:flex-row">
-          <p className="mb-4 text-sm text-light-500 dark:text-dark-400 md:mb-0">
+          <p className="mb-4 text-sm text-dark-500 dark:text-dark-400 md:mb-0">
             &copy; {currentYear} Pixy AI. All rights reserved.
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            <a href="#" className="text-xs transition-colors text-light-500 dark:text-dark-400 hover:text-light-900 dark:hover:text-white">
+            <a href="#" className="text-xs transition-colors text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white">
               Privacy Policy
             </a>
-            <a href="#" className="text-xs transition-colors text-light-500 dark:text-dark-400 hover:text-light-900 dark:hover:text-white">
+            <a href="#" className="text-xs transition-colors text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white">
               Terms of Service
             </a>
-            <a href="#" className="text-xs transition-colors text-light-500 dark:text-dark-400 hover:text-light-900 dark:hover:text-white">
+            <a href="#" className="text-xs transition-colors text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white">
               Cookie Policy
             </a>
             <a 
               href="https://pixyai.com" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="flex items-center text-xs transition-colors text-light-500 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400"
+              className="flex items-center text-xs transition-colors text-dark-500 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400"
             >
               <FaCode className="mr-1 text-xs" /> Powered by Pixy AI
             </a>

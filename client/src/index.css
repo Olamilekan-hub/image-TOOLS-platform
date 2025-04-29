@@ -7,6 +7,28 @@
 @tailwind utilities;
 
 :root {
+  /* Light mode color variables */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-bg-tertiary: #f1f5f9;
+  
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-tertiary: #64748b;
+  
+  --color-border: #e2e8f0;
+  
+  --color-blue-primary: #3b82f6;
+  --color-blue-hover: #2563eb;
+  --color-blue-light: #dbeafe;
+  
+  --color-accent: #8b5cf6;
+  
+  /* Shadow variables */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -14,100 +36,107 @@
   -webkit-text-size-adjust: 100%;
 }
 
-@layer base {
-  /* Light mode (default) */
-  body {
-    @apply font-sans antialiased bg-light-50 text-light-900;
-  }
+.dark {
+  /* Dark mode color variables */
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #334155;
   
-  /* Dark mode */
-  .dark body {
-    @apply text-white bg-dark-950;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-tertiary: #94a3b8;
+  
+  --color-border: #334155;
+  
+  --color-blue-primary: #3b82f6;
+  --color-blue-hover: #60a5fa;
+  --color-blue-light: #172554;
+  
+  --color-accent: #8b5cf6;
+  
+  /* Shadow variables for dark mode */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased transition-colors duration-200 bg-white dark:bg-dark-950 text-dark-900 dark:text-white;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight font-display;
+    @apply font-semibold tracking-tight font-display text-dark-900 dark:text-white;
+  }
+  
+  a {
+    @apply transition-colors text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300;
+  }
+  
+  p {
+    @apply text-dark-700 dark:text-dark-300;
   }
 }
 
 @layer components {
-  /* Light mode components */
+  /* Glass container - Light mode */
   .glass-container {
-    @apply border bg-white/70 backdrop-blur-md border-light-200 shadow-glass;
+    @apply transition-all duration-200 border shadow-md bg-white/70 backdrop-blur-md border-light-200;
   }
   
-  .glass-card {
-    @apply overflow-hidden border bg-white/70 backdrop-blur-md border-light-200 shadow-glass rounded-xl;
-  }
-  
-  /* Dark mode variants */
+  /* Glass container - Dark mode */
   .dark .glass-container {
-    @apply border bg-dark-800/70 backdrop-blur-md border-dark-700/50 shadow-glass;
+    @apply border bg-dark-800/70 backdrop-blur-md border-dark-700/50;
   }
   
+  /* Glass card - Light mode */
+  .glass-card {
+    @apply overflow-hidden transition-all duration-200 border shadow-md bg-white/70 backdrop-blur-md border-light-200 rounded-xl;
+  }
+  
+  /* Glass card - Dark mode */
   .dark .glass-card {
-    @apply overflow-hidden border bg-dark-800/70 backdrop-blur-md border-dark-700/50 shadow-glass rounded-xl;
+    @apply border bg-dark-800/70 backdrop-blur-md border-dark-700/50;
   }
   
+  /* Gradient border */
   .gradient-border {
     @apply relative before:absolute before:inset-0 before:p-[1px] before:rounded-xl before:bg-gradient-to-r before:from-primary-500 before:via-accent-500 before:to-primary-500 before:-z-10;
   }
   
-  /* Light mode buttons */
+  /* Button variants - Light mode */
   .btn-primary {
-    @apply px-4 py-2 font-medium text-white transition-all duration-200 rounded-lg shadow-lg bg-primary-600 hover:bg-primary-700 shadow-primary-600/20 hover:shadow-primary-600/30;
+    @apply px-4 py-2 font-medium text-white transition-all duration-200 rounded-lg shadow-md bg-primary-600 hover:bg-primary-700 shadow-primary-600/10 hover:shadow-primary-600/20;
   }
   
   .btn-secondary {
-    @apply px-4 py-2 font-medium text-white transition-all duration-200 rounded-lg shadow-lg bg-accent-600 hover:bg-accent-700 shadow-accent-600/20 hover:shadow-accent-600/30;
+    @apply px-4 py-2 font-medium text-white transition-all duration-200 rounded-lg shadow-md bg-accent-600 hover:bg-accent-700 shadow-accent-600/10 hover:shadow-accent-600/20;
   }
   
   .btn-outline {
-    @apply px-4 py-2 font-medium transition-all duration-200 border rounded-lg border-light-300 hover:border-primary-500 text-light-900 hover:bg-primary-500/10;
+    @apply px-4 py-2 font-medium transition-all duration-200 border rounded-lg border-light-300 hover:border-primary-500 text-dark-700 dark:text-white dark:border-dark-600 hover:bg-primary-500/10;
   }
   
   .btn-ghost {
-    @apply px-4 py-2 font-medium transition-all duration-200 rounded-lg text-light-900 hover:bg-light-200/70;
+    @apply px-4 py-2 font-medium transition-all duration-200 rounded-lg text-dark-700 dark:text-white hover:bg-light-200/70 dark:hover:bg-dark-700/50;
   }
   
-  /* Dark mode buttons */
-  .dark .btn-outline {
-    @apply text-white border-dark-600 hover:border-primary-500 hover:bg-primary-500/10;
-  }
-  
-  .dark .btn-ghost {
-    @apply text-white hover:bg-dark-700/50;
-  }
-  
-  /* Light mode form elements */
+  /* Form elements - Light mode */
   .form-input {
-    @apply w-full px-4 py-2 transition-all duration-200 bg-white border rounded-lg border-light-300 text-light-900 placeholder-light-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply w-full px-4 py-2 transition-all duration-200 bg-white border rounded-lg dark:bg-dark-800 border-light-300 dark:border-dark-600 text-dark-900 dark:text-white placeholder-light-500 dark:placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
   }
   
   .form-select {
-    @apply w-full px-4 py-2 transition-all duration-200 bg-white border rounded-lg border-light-300 text-light-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply w-full px-4 py-2 transition-all duration-200 bg-white border rounded-lg dark:bg-dark-800 border-light-300 dark:border-dark-600 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
   }
   
   .form-textarea {
-    @apply w-full px-4 py-2 transition-all duration-200 bg-white border rounded-lg border-light-300 text-light-900 placeholder-light-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply w-full px-4 py-2 transition-all duration-200 bg-white border rounded-lg dark:bg-dark-800 border-light-300 dark:border-dark-600 text-dark-900 dark:text-white placeholder-light-500 dark:placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
   }
   
-  /* Dark mode form elements */
-  .dark .form-input {
-    @apply text-white bg-dark-800 border-dark-600 placeholder-dark-400;
-  }
-  
-  .dark .form-select {
-    @apply text-white bg-dark-800 border-dark-600;
-  }
-  
-  .dark .form-textarea {
-    @apply text-white bg-dark-800 border-dark-600 placeholder-dark-400;
-  }
-  
-  /* Card styles */
+  /* Card styles - Light mode */
   .card {
-    @apply overflow-hidden bg-white border shadow-xl rounded-xl border-light-200;
+    @apply overflow-hidden transition-all duration-200 bg-white border shadow-md dark:bg-dark-800 rounded-xl dark:shadow-lg border-light-200 dark:border-dark-700;
   }
   
   .card-body {
@@ -115,21 +144,79 @@
   }
   
   .card-title {
-    @apply mb-4 text-xl font-semibold text-light-900;
-  }
-  
-  /* Dark mode card styles */
-  .dark .card {
-    @apply bg-dark-800 border-dark-700;
-  }
-  
-  .dark .card-title {
-    @apply text-white;
+    @apply mb-4 text-xl font-semibold text-dark-900 dark:text-white;
   }
   
   /* Layout utilities */
   .page-container {
     @apply container px-4 pt-24 pb-16 mx-auto max-w-7xl;
+  }
+  
+  /* Hero section background - Light mode */
+  .hero-bg {
+    @apply relative overflow-hidden bg-light-50 dark:bg-dark-950;
+    background-image: radial-gradient(circle at 30% 107%, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.08) 40%, rgba(59, 130, 246, 0.05) 80%);
+  }
+  
+  /* Hero section background - Dark mode */
+  .dark .hero-bg {
+    background-image: radial-gradient(circle at 30% 107%, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.15) 40%, rgba(59, 130, 246, 0.1) 80%);
+  }
+  
+  .hero-bg::before {
+    content: "";
+    @apply absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent;
+  }
+  
+  .hero-grid {
+    @apply absolute top-0 left-0 w-full h-full pointer-events-none opacity-5 dark:opacity-10;
+    background-size: 50px 50px;
+    background-image: 
+      linear-gradient(to right, rgba(59, 130, 246, 0.2) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(59, 130, 246, 0.2) 1px, transparent 1px);
+  }
+  
+  /* Background glass effect - Light mode */
+  .bg-glass {
+    @apply transition-all duration-200 bg-white/80 dark:bg-dark-800/70 backdrop-blur-md;
+  }
+  
+  /* Gradient text */
+  .text-gradient {
+    @apply text-transparent transition-colors duration-200 bg-clip-text bg-gradient-to-r from-primary-600 via-accent-600 to-primary-600 dark:from-primary-400 dark:via-accent-400 dark:to-primary-400;
+  }
+  
+  /* Glow effects */
+  .glow-sm {
+    @apply shadow-md dark:shadow-lg;
+    box-shadow: 0 0 10px 0 rgba(59, 130, 246, 0.1);
+  }
+  
+  .dark .glow-sm {
+    box-shadow: 0 0 10px 0 rgba(59, 130, 246, 0.2);
+  }
+
+  .glow-md {
+    @apply shadow-lg;
+    box-shadow: 0 0 20px 0 rgba(59, 130, 246, 0.1), 0 0 10px 0 rgba(139, 92, 246, 0.05);
+  }
+  
+  .dark .glow-md {
+    box-shadow: 0 0 20px 0 rgba(59, 130, 246, 0.2), 0 0 10px 0 rgba(139, 92, 246, 0.1);
+  }
+
+  .glow-lg {
+    @apply shadow-xl;
+    box-shadow: 0 0 30px 0 rgba(59, 130, 246, 0.1), 0 0 15px 0 rgba(139, 92, 246, 0.05), 0 0 5px 0 rgba(59, 130, 246, 0.05);
+  }
+  
+  .dark .glow-lg {
+    box-shadow: 0 0 30px 0 rgba(59, 130, 246, 0.2), 0 0 15px 0 rgba(139, 92, 246, 0.1), 0 0 5px 0 rgba(59, 130, 246, 0.1);
+  }
+
+  /* Loading spinner */
+  .spinner {
+    @apply w-8 h-8 border-t-4 border-solid rounded-full border-primary-500 animate-spin;
   }
   
   /* Animations */
@@ -148,101 +235,6 @@
 
   .animate-pulse-slow {
     animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-  
-  /* HERO SECTION BACKGROUND - Light mode */
-  .hero-bg {
-    background: radial-gradient(circle at 30% 107%, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.08) 40%, rgba(236, 72, 153, 0.05) 80%),
-                linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .hero-bg::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
-  }
-  
-  /* HERO SECTION BACKGROUND - Dark mode */
-  .dark .hero-bg {
-    background: radial-gradient(circle at 30% 107%, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.15) 40%, rgba(236, 72, 153, 0.1) 80%),
-                linear-gradient(180deg, #0f172a 0%, #0c0f1d 100%);
-  }
-  
-  .hero-grid {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.1;
-    background-size: 50px 50px;
-    background-image: 
-      linear-gradient(to right, rgba(59, 130, 246, 0.2) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(59, 130, 246, 0.2) 1px, transparent 1px);
-    pointer-events: none;
-  }
-  
-  /* Dark mode hero grid */
-  .dark .hero-grid {
-    background-image: 
-      linear-gradient(to right, rgba(139, 92, 246, 0.2) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(139, 92, 246, 0.2) 1px, transparent 1px);
-  }
-
-  /* Glassmorphism - Light mode */
-  .bg-glass {
-    @apply bg-white/80 backdrop-blur-md;
-  }
-  
-  /* Glassmorphism - Dark mode */
-  .dark .bg-glass {
-    @apply bg-dark-800/70 backdrop-blur-md;
-  }
-
-  /* Gradient text - Light mode */
-  .text-gradient {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-accent-600 to-primary-600;
-  }
-  
-  /* Gradient text - Dark mode */
-  .dark .text-gradient {
-    @apply bg-gradient-to-r from-primary-400 via-accent-400 to-primary-400;
-  }
-
-  /* Gradient borders */
-  .border-gradient {
-    @apply relative;
-  }
-
-  .border-gradient::before {
-    content: '';
-    @apply absolute inset-0 rounded-xl p-[1px] bg-gradient-to-r from-primary-500/50 via-accent-500/50 to-primary-500/50 -z-10;
-  }
-
-  /* Glow effects - Light mode */
-  .glow-sm {
-    box-shadow: 0 0 10px 0 rgba(59, 130, 246, 0.2);
-  }
-
-  .glow-md {
-    box-shadow: 0 0 20px 0 rgba(59, 130, 246, 0.2), 0 0 10px 0 rgba(139, 92, 246, 0.1);
-  }
-
-  .glow-lg {
-    box-shadow: 0 0 30px 0 rgba(59, 130, 246, 0.2), 0 0 15px 0 rgba(139, 92, 246, 0.1), 0 0 5px 0 rgba(236, 72, 153, 0.1);
-  }
-  
-  /* Glow effects - Dark mode remain the same */
-
-  /* Loading spinner */
-  .spinner {
-    @apply w-8 h-8 border-t-4 border-solid rounded-full border-primary-500 animate-spin;
   }
 }
 

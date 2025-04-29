@@ -62,8 +62,8 @@ const Navbar = () => {
     <nav 
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? 'py-2 bg-white/80 dark:bg-dark-900/80 backdrop-blur-md shadow-md' 
-          : 'py-4 bg-transparent'
+          ? 'py-2 bg-white/95 dark:bg-dark-900/95 backdrop-blur-md shadow-md' 
+          : 'py-4 bg-white/70 dark:bg-transparent backdrop-blur-sm'
       }`}
     >
       <div className="container px-4 mx-auto sm:px-6 lg:px-8">
@@ -87,11 +87,11 @@ const Navbar = () => {
                 to={link.path}
                 className={`px-3 py-2 rounded-lg flex items-center space-x-1 text-sm font-medium transition-all duration-200 ${
                   isActive(link.path)
-                    ? 'bg-light-200/70 dark:bg-dark-700/70 text-light-900 dark:text-white relative before:absolute before:bottom-0 before:left-0 before:h-0.5 before:w-full before:bg-gradient-to-r before:from-primary-500 before:to-accent-500'
-                    : 'text-light-600 dark:text-dark-300 hover:text-light-900 dark:hover:text-white hover:bg-light-200/40 dark:hover:bg-dark-700/40'
+                    ? 'bg-light-200/70 dark:bg-dark-700/70 text-dark-900 dark:text-white relative after:absolute after:bottom-0 after:left-3 after:right-3 after:h-0.5 after:bg-gradient-to-r after:from-primary-500 after:to-accent-500'
+                    : 'text-dark-600 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-light-100/70 dark:hover:bg-dark-800/50'
                 }`}
               >
-                {link.icon && <span className="text-primary-500">{link.icon}</span>}
+                {link.icon && <span className="mr-1 text-primary-500">{link.icon}</span>}
                 <span>{link.label}</span>
               </Link>
             ))}
@@ -99,7 +99,7 @@ const Navbar = () => {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 transition-colors rounded-lg text-light-600 dark:text-dark-300 hover:text-light-900 dark:hover:text-white hover:bg-light-200/40 dark:hover:bg-dark-700/40"
+              className="p-2 transition-colors rounded-lg text-dark-600 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-light-100/70 dark:hover:bg-dark-800/50"
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {theme === 'dark' ? <FaSun size={18} /> : <FaMoon size={18} />}
@@ -111,7 +111,7 @@ const Navbar = () => {
             {/* Mobile Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 transition-colors rounded-lg text-light-600 dark:text-dark-300 hover:text-light-900 dark:hover:text-white hover:bg-light-200/40 dark:hover:bg-dark-700/40"
+              className="p-2 transition-colors rounded-lg text-dark-600 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-light-100/70 dark:hover:bg-dark-800/50"
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {theme === 'dark' ? <FaSun size={18} /> : <FaMoon size={18} />}
@@ -119,7 +119,7 @@ const Navbar = () => {
             
             <button 
               onClick={toggleMenu} 
-              className="p-2 transition-colors rounded-lg text-light-900 dark:text-white focus:outline-none hover:bg-light-200/50 dark:hover:bg-dark-800/50"
+              className="p-2 transition-colors rounded-lg text-dark-900 dark:text-white focus:outline-none hover:bg-light-100/70 dark:hover:bg-dark-800/50"
               aria-label={isOpen ? "Close menu" : "Open menu"}
             >
               {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
@@ -145,13 +145,13 @@ const Navbar = () => {
                   to={link.path}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 ${
                     isActive(link.path)
-                      ? 'bg-light-200/70 dark:bg-dark-700/70 text-light-900 dark:text-white'
-                      : 'text-light-600 dark:text-dark-300 hover:text-light-900 dark:hover:text-white hover:bg-light-200/40 dark:hover:bg-dark-700/40'
+                      ? 'bg-light-200/70 dark:bg-dark-700/70 text-dark-900 dark:text-white'
+                      : 'text-dark-600 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-light-100/70 dark:hover:bg-dark-800/50'
                   }`}
                   onClick={closeMenu}
                 >
                   {link.icon ? (
-                    <span className={`${isActive(link.path) ? 'text-primary-500' : 'text-light-500 dark:text-dark-400'}`}>
+                    <span className={`${isActive(link.path) ? 'text-primary-500' : 'text-dark-500 dark:text-dark-400'}`}>
                       {link.icon}
                     </span>
                   ) : (
