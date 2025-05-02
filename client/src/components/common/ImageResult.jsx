@@ -10,7 +10,11 @@ import {
   FaCode,
   FaCheck,
   FaImage,
-  FaShareAlt
+  FaShareAlt,
+  FaTimes,
+  FaExpand,
+  FaCompress,
+  FaLock
 } from 'react-icons/fa';
 import Button from './Button';
 import Card from './Card';
@@ -22,7 +26,9 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
   const [imageLoadError, setImageLoadError] = useState(false);
   const [imageLoadSuccess, setImageLoadSuccess] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [showDevTools, setShowDevTools] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [metadata, setMetadata] = useState({
     resolution: null,
     style_type: null,
@@ -35,6 +41,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
     setImageLoadError(false);
     setImageLoadSuccess(false);
     setIsCopied(false);
+    setIsFullScreen(false);
     
     if (!imageData) {
       console.error('No image data received');
@@ -127,7 +134,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
     setImageLoadError(false);
   };
   
-  // Handle download button click with error handling
+  // Handle download button click with error handling - IMPROVED TO DOWNLOAD DIRECTLY
   const handleDownload = () => {
     if (!imageUrl) {
       addToast('No image available to download', 'error');
@@ -140,19 +147,35 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
     }
     
     try {
-      // Create download link and trigger download
-      const link = document.createElement('a');
-      link.href = imageUrl;
-      link.download = `ideogram-${Date.now()}.png`;
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      addToast('Image downloaded successfully', 'success');
+      // Fetch the image as a blob
+      fetch(imageUrl)
+        .then(response => response.blob())
+        .then(blob => {
+          // Create object URL
+          const blobUrl = URL.createObjectURL(blob);
+          
+          // Create download link and trigger download
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = `pixy-ai-${Date.now()}.png`;
+          document.body.appendChild(link);
+          link.click();
+          
+          // Clean up
+          document.body.removeChild(link);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+          
+          addToast('Image downloaded successfully', 'success');
+        })
+        .catch(error => {
+          console.error('Download error:', error);
+          // Fallback for browsers that don't support the above
+          window.location.href = imageUrl;
+          addToast('Direct download not supported in your browser. Opening image in new tab.', 'info');
+        });
     } catch (error) {
       console.error('Download error:', error);
-      // Fallback: Open in new tab
+      // Ultimate fallback: Open in new tab
       window.open(imageUrl, '_blank');
       addToast('Direct download failed. Image opened in new tab instead.', 'info');
     }
@@ -196,6 +219,11 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
       copyPromptToClipboard();
     }
   };
+  
+  // Toggle fullscreen mode for the image
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+  };
 
   // If no data, don't render
   if (!imageData) {
@@ -209,6 +237,34 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
       transition={{ duration: 0.5 }}
       className="relative"
     >
+      {/* Fullscreen Image Modal */}
+      <AnimatePresence>
+        {isFullScreen && imageUrl && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90"
+            onClick={toggleFullScreen}
+          >
+            <div className="relative max-w-full max-h-full p-4">
+              <button 
+                className="absolute p-2 rounded-full text-white bg-dark-800/50 top-4 right-4 hover:bg-dark-700"
+                onClick={toggleFullScreen}
+              >
+                <FaTimes size={24} />
+              </button>
+              <img 
+                src={imageUrl} 
+                alt={prompt || 'Generated image'} 
+                className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       <Card 
         variant="glass" 
         className="overflow-hidden"
@@ -225,13 +281,15 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
               </p>
               <p className="max-w-md text-sm text-center text-dark-600 dark:text-dark-400">
                 The image may still be processing or the link may have expired.
-                Try checking the API response details below.
               </p>
             </div>
           ) : (
             <div className="relative group">
-              {/* Image */}
-              <div className="w-full overflow-hidden bg-light-100/30 dark:bg-dark-900/30 rounded-t-xl">
+              {/* Image with click to fullscreen */}
+              <div 
+                className="w-full overflow-hidden bg-light-100/30 dark:bg-dark-900/30 rounded-t-xl cursor-pointer"
+                onClick={toggleFullScreen}
+              >
                 <img 
                   src={imageUrl} 
                   alt={prompt || 'Generated image'} 
@@ -239,44 +297,49 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
                   onError={handleImageError}
                   onLoad={handleImageLoad}
                 />
+                {/* Fullscreen hint overlay */}
+                <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 bg-dark-900/40 opacity-0 group-hover:opacity-100">
+                  <div className="p-3 rounded-full bg-dark-800/70">
+                    <FaExpand className="text-white" size={20} />
+                  </div>
+                </div>
               </div>
               
               {/* Action buttons overlay - visible on hover or mobile */}
               {imageLoadSuccess && (
-                <div className="absolute top-0 left-0 flex flex-col justify-between w-full h-full p-4 transition-opacity duration-300 opacity-0 bg-gradient-to-b from-light-900/60 dark:from-dark-900/60 via-transparent to-light-900/60 dark:to-dark-900/60 group-hover:opacity-100">
-                  {/* Top actions row */}
-                  <div className="flex justify-end space-x-2">
+                <div className="absolute bottom-0 flex items-center justify-center w-full p-4 transition-opacity duration-300 bg-gradient-to-t from-dark-900/80 to-transparent opacity-0 group-hover:opacity-100">
+                  <div className="flex space-x-3">
                     <Button 
                       variant="glass" 
                       size="sm"
-                      className="!p-2 rounded-lg backdrop-blur-md"
-                      onClick={() => window.open(imageUrl, '_blank')}
-                      title="Open in new tab"
-                    >
-                      <FaExternalLinkAlt size={14} />
-                    </Button>
-                    <Button 
-                      variant="glass" 
-                      size="sm"
-                      className="!p-2 rounded-lg backdrop-blur-md"
-                      onClick={handleShare}
-                      title="Share image"
-                    >
-                      <FaShareAlt size={14} />
-                    </Button>
-                  </div>
-                  
-                  {/* Bottom actions row */}
-                  <div className="flex justify-center space-x-2">
-                    <Button 
-                      variant="primary" 
-                      size="sm"
-                      className="shadow-lg backdrop-blur-md"
+                      className="backdrop-blur-md"
                       onClick={handleDownload}
                       title="Download image"
                       icon={<FaDownload size={14} />}
                     >
                       Download
+                    </Button>
+                    
+                    <Button 
+                      variant="glass" 
+                      size="sm"
+                      className="backdrop-blur-md"
+                      onClick={() => window.open(imageUrl, '_blank')}
+                      title="Open in new tab"
+                      icon={<FaExternalLinkAlt size={14} />}
+                    >
+                      Open
+                    </Button>
+                    
+                    <Button 
+                      variant="glass" 
+                      size="sm"
+                      className="backdrop-blur-md"
+                      onClick={handleShare}
+                      title="Share image"
+                      icon={<FaShareAlt size={14} />}
+                    >
+                      Share
                     </Button>
                   </div>
                 </div>
@@ -332,19 +395,19 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
             )}
           </div>
           
-          {/* API Response Details (Collapsible) */}
-          <div className="mt-2">
+          {/* Developer Tools - Hidden by Default */}
+          <div className="mt-4 pt-4 border-t border-light-200/50 dark:border-dark-700/50">
             <Button
               variant="ghost"
               size="xs"
               className="justify-between w-full text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white"
-              onClick={() => setShowDetails(!showDetails)}
-              icon={<FaCode size={12} />}
+              onClick={() => setShowDevTools(!showDevTools)}
+              icon={<FaLock size={12} />}
               iconPosition="left"
             >
-              <span>API Response Details</span>
+              <span>Developer Tools</span>
               <svg 
-                className={`w-4 h-4 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} 
+                className={`w-4 h-4 transition-transform duration-300 ${showDevTools ? 'rotate-180' : ''}`} 
                 fill="none" 
                 viewBox="0 0 24 24" 
                 stroke="currentColor"
@@ -354,18 +417,52 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
             </Button>
             
             <AnimatePresence>
-              {showDetails && (
+              {showDevTools && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="overflow-hidden"
+                  className="mt-4 overflow-hidden"
                 >
-                  <div className="p-3 mt-2 overflow-auto text-xs border rounded-lg bg-light-50/70 dark:bg-dark-900/70 max-h-48 border-light-300 dark:border-dark-700">
-                    <pre className="font-mono text-xs text-dark-600 dark:text-dark-300">
-                      {JSON.stringify(imageData, null, 2)}
-                    </pre>
+                  {/* API Response Details (Collapsible) */}
+                  <div>
+                    <Button
+                      variant="ghost"
+                      size="xs"
+                      className="justify-between w-full text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white"
+                      onClick={() => setShowDetails(!showDetails)}
+                      icon={<FaCode size={12} />}
+                      iconPosition="left"
+                    >
+                      <span>API Response Details</span>
+                      <svg 
+                        className={`w-4 h-4 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </Button>
+                    
+                    <AnimatePresence>
+                      {showDetails && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="p-3 mt-2 overflow-auto text-xs border rounded-lg bg-light-50/70 dark:bg-dark-900/70 max-h-48 border-light-300 dark:border-dark-700">
+                            <pre className="font-mono text-xs text-dark-600 dark:text-dark-300">
+                              {JSON.stringify(imageData, null, 2)}
+                            </pre>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </motion.div>
               )}

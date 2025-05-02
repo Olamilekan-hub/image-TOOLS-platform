@@ -14,8 +14,15 @@ const api = axios.create({
 // Generate image from text prompt
 export const generateImage = async (promptData) => {
   try {
-    console.log('Sending generate request with data:', promptData);
-    const response = await api.post('/images/generate', promptData);
+    // Make sure we're only sending the required fields
+    const cleanedData = {
+      prompt: promptData.prompt,
+      model: promptData.model || 'V_2A',
+      style_type: promptData.style_type || 'REALISTIC'
+    };
+    
+    console.log('Sending generate request with data:', cleanedData);
+    const response = await api.post('/images/generate', cleanedData);
     console.log('Generate response:', response.data);
     return response.data;
   } catch (error) {
@@ -28,6 +35,30 @@ export const generateImage = async (promptData) => {
 export const remixImage = async (formData) => {
   try {
     console.log('Sending remix request with formData');
+    
+    // Ensure we're properly handling the image_request
+    if (formData.has('image_request')) {
+      try {
+        const imageRequestStr = formData.get('image_request');
+        if (typeof imageRequestStr === 'string') {
+          const imageRequest = JSON.parse(imageRequestStr);
+          
+          // Clean the image request to only include user prompt and necessary fields
+          const cleanedRequest = {
+            prompt: imageRequest.prompt,
+            model: imageRequest.model || 'V_2A',
+            aspect_ratio: imageRequest.aspect_ratio || 'ASPECT_16_9',
+            magic_prompt_option: imageRequest.magic_prompt_option || 'ON'
+          };
+          
+          // Replace with cleaned version
+          formData.set('image_request', JSON.stringify(cleanedRequest));
+        }
+      } catch (e) {
+        console.error('Error parsing/cleaning image_request:', e);
+      }
+    }
+    
     // Debug the formData content
     if (formData instanceof FormData) {
       for (let [key, value] of formData.entries()) {
@@ -53,6 +84,28 @@ export const remixImage = async (formData) => {
 export const upscaleImage = async (formData) => {
   try {
     console.log('Sending upscale request with formData');
+    
+    // Clean the image_request if present
+    if (formData.has('image_request')) {
+      try {
+        const imageRequestStr = formData.get('image_request');
+        if (typeof imageRequestStr === 'string') {
+          const imageRequest = JSON.parse(imageRequestStr);
+          
+          // Only include essential fields
+          const cleanedRequest = {
+            prompt: imageRequest.prompt,
+            model: imageRequest.model || 'V_2A'
+          };
+          
+          // Replace with cleaned version
+          formData.set('image_request', JSON.stringify(cleanedRequest));
+        }
+      } catch (e) {
+        console.error('Error parsing/cleaning image_request:', e);
+      }
+    }
+    
     const response = await api.post('/images/upscale', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -70,6 +123,8 @@ export const upscaleImage = async (formData) => {
 export const describeImage = async (formData) => {
   try {
     console.log('Sending describe request with formData');
+    // No additional parameters needed for describe, just pass the image
+    
     const response = await api.post('/images/describe', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -87,6 +142,12 @@ export const describeImage = async (formData) => {
 export const reframeImage = async (formData) => {
   try {
     console.log('Sending reframe request with formData');
+    
+    // Make sure we're only sending essential parameters
+    if (formData.has('model') && formData.has('resolution')) {
+      // These fields are already separate form fields and don't need cleaning
+    }
+    
     const response = await api.post('/images/reframe', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
