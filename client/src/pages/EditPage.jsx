@@ -257,10 +257,10 @@ const EditPage = () => {
         {/* Result Section */}
         <div>
           {loading ? (
-            <div className="flex flex-col items-center justify-center h-64 glass-card">
+            <div className="flex flex-col items-center justify-center h-64 glass-card bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl">
               <div className="w-16 h-16 mb-4 border-t-4 border-b-4 rounded-full border-primary-500 animate-spin"></div>
-              <p className="text-lg text-white">Editing your image...</p>
-              <p className="mt-2 text-sm text-dark-400">This may take a few moments</p>
+              <p className="text-lg text-dark-900 dark:text-white">Editing your image...</p>
+              <p className="mt-2 text-sm text-dark-600 dark:text-dark-400">This may take a few moments</p>
             </div>
           ) : result ? (
             <ImageResult 
@@ -268,14 +268,14 @@ const EditPage = () => {
               prompt={formData.prompt}
             />
           ) : (
-            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px]">
+            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px] bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl">
               <div className="p-6 mb-6 rounded-full bg-primary-500/10 animate-pulse-slow">
                 <FaImage size={64} className="text-primary-500/60" />
               </div>
-              <h3 className="mb-2 text-xl font-semibold text-white font-display">
+              <h3 className="mb-2 text-xl font-semibold text-dark-900 dark:text-white font-display">
                 Your edited image will appear here
               </h3>
-              <p className="max-w-md text-center text-dark-400">
+              <p className="max-w-md text-center text-dark-600 dark:text-dark-300">
                 Upload an image and add edit instructions to transform it with AI
               </p>
             </div>
@@ -287,7 +287,7 @@ const EditPage = () => {
       <div className="mt-16">
         <div className="flex items-center mb-6">
           <FaInfoCircle className="mr-3 text-primary-500" size={24} />
-          <h2 className="text-2xl font-bold font-display">How to Edit Images</h2>
+          <h2 className="text-2xl font-bold text-dark-900 dark:text-white font-display">How to Edit Images</h2>
         </div>
         
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -295,11 +295,11 @@ const EditPage = () => {
             <Card.Body>
               <div className="flex justify-center mb-4">
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary-500/10">
-                  <span className="text-xl font-bold text-primary-400">1</span>
+                  <span className="text-xl font-bold text-primary-600 dark:text-primary-400">1</span>
                 </div>
               </div>
               <Card.Title className="text-center">Upload Your Image</Card.Title>
-              <p className="text-center text-dark-300">
+              <p className="text-center text-dark-600 dark:text-dark-300">
                 Start by uploading the image you want to edit. Supported formats are JPEG, PNG, and WebP.
               </p>
             </Card.Body>
@@ -309,11 +309,11 @@ const EditPage = () => {
             <Card.Body>
               <div className="flex justify-center mb-4">
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-secondary-500/10">
-                  <span className="text-xl font-bold text-secondary-400">2</span>
+                  <span className="text-xl font-bold text-secondary-600 dark:text-secondary-400">2</span>
                 </div>
               </div>
               <Card.Title className="text-center">Describe Your Changes</Card.Title>
-              <p className="text-center text-dark-300">
+              <p className="text-center text-dark-600 dark:text-dark-300">
                 Clearly describe how you want to edit the image. Be specific about what elements to change, add, or modify.
               </p>
             </Card.Body>
@@ -323,11 +323,11 @@ const EditPage = () => {
             <Card.Body>
               <div className="flex justify-center mb-4">
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-accent-500/10">
-                  <span className="text-xl font-bold text-accent-400">3</span>
+                  <span className="text-xl font-bold text-accent-600 dark:text-accent-400">3</span>
                 </div>
               </div>
               <Card.Title className="text-center">Choose Settings</Card.Title>
-              <p className="text-center text-dark-300">
+              <p className="text-center text-dark-600 dark:text-dark-300">
                 Select your preferred model, aspect ratio, and whether to use magic prompt enhancement, then generate your edited image.
               </p>
             </Card.Body>
@@ -342,7 +342,7 @@ const EditPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-light-900/30 dark:bg-dark-900/80 backdrop-blur-sm"
             onClick={closePremiumNotice}
           >
             <motion.div 
@@ -350,7 +350,7 @@ const EditPage = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="max-w-md p-8 mx-auto shadow-2xl bg-dark-800 rounded-xl"
+              className="max-w-md p-8 mx-auto shadow-2xl bg-white dark:bg-dark-800 rounded-xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-center mb-6">
@@ -359,9 +359,9 @@ const EditPage = () => {
                 </div>
               </div>
               
-              <h3 className="mb-3 text-2xl font-bold text-center font-display">Premium Feature</h3>
+              <h3 className="mb-3 text-2xl font-bold text-center text-dark-900 dark:text-white font-display">Premium Feature</h3>
               
-              <p className="mb-6 text-center text-dark-300">
+              <p className="mb-6 text-center text-dark-600 dark:text-dark-300">
                 V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
               </p>
               

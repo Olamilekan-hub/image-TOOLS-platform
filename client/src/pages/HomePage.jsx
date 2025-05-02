@@ -116,7 +116,7 @@ const HomePage = () => {
               >
                 <div className="relative flex items-center justify-center w-20 h-20">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-2xl opacity-90 animate-pulse-slow"></div>
-                  <span className="relative text-4xl font-bold text-white font-display">P</span>
+                  <span className="relative text-4xl font-bold text-white font-display">P </span>
                   
                   {/* Decorative orbs */}
                   <motion.div 
@@ -243,7 +243,7 @@ const HomePage = () => {
               transition={{ duration: 0.5 }}
               className="inline-block mb-3 px-4 py-1.5 bg-light-100/80 dark:bg-dark-800/80 rounded-full"
             >
-              <span className="text-sm font-medium text-transparent bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text">
+              <span className="text-sm font-medium text-transparent bg-gradient-to-r from-primary-400 to-secondary-800 bg-clip-text">
                 Powerful AI Toolkit
               </span>
             </motion.div>

@@ -66,15 +66,15 @@ export const ToastProvider = ({ children }) => {
   const getToastClass = (type) => {
     switch (type) {
       case 'success':
-        return 'bg-green-900/80 backdrop-blur-md border-l-4 border-green-500 shadow-lg shadow-green-900/20';
+        return 'bg-white/80 dark:bg-green-900/80 backdrop-blur-md border-l-4 border-green-500 shadow-lg shadow-green-900/20';
       case 'error':
-        return 'bg-red-900/80 backdrop-blur-md border-l-4 border-red-500 shadow-lg shadow-red-900/20';
+        return 'bg-white/80 dark:bg-red-900/80 backdrop-blur-md border-l-4 border-red-500 shadow-lg shadow-red-900/20';
       case 'info':
-        return 'bg-primary-900/80 backdrop-blur-md border-l-4 border-primary-500 shadow-lg shadow-primary-900/20';
+        return 'bg-white/80 dark:bg-primary-900/80 backdrop-blur-md border-l-4 border-primary-500 shadow-lg shadow-primary-900/20';
       case 'warning':
-        return 'bg-amber-900/80 backdrop-blur-md border-l-4 border-amber-500 shadow-lg shadow-amber-900/20';
+        return 'bg-white/80 dark:bg-amber-900/80 backdrop-blur-md border-l-4 border-amber-500 shadow-lg shadow-amber-900/20';
       default:
-        return 'bg-primary-900/80 backdrop-blur-md border-l-4 border-primary-500 shadow-lg shadow-primary-900/20';
+        return 'bg-white/80 dark:bg-primary-900/80 backdrop-blur-md border-l-4 border-primary-500 shadow-lg shadow-primary-900/20';
     }
   };
 
@@ -101,7 +101,7 @@ export const ToastProvider = ({ children }) => {
               variants={toastVariants}
               transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               className={`
-                pointer-events-auto rounded-lg text-white 
+                pointer-events-auto rounded-lg text-dark-800 dark:text-white 
                 flex items-start p-4 w-full max-w-md
                 ${getToastClass(toast.type)}
               `}
@@ -114,7 +114,7 @@ export const ToastProvider = ({ children }) => {
               </div>
               <button
                 onClick={() => removeToast(toast.id)}
-                className="flex-shrink-0 transition-colors text-dark-300 hover:text-white"
+                className="flex-shrink-0 transition-colors text-dark-500 dark:text-dark-300 hover:text-dark-700 dark:hover:text-white"
                 aria-label="Close notification"
               >
                 <FaTimes size={16} />

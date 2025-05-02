@@ -192,13 +192,13 @@ const RemixPage = () => {
             
             <div className="mt-6">
               <div className="flex items-center justify-between mb-1">
-                <label htmlFor="prompt" className="flex items-center block text-sm font-medium text-dark-300">
+                <label htmlFor="prompt" className="flex items-center block text-sm font-medium text-dark-700 dark:text-dark-300">
                   Remix Prompt <span className="ml-1 text-accent-500">*</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => setShowIdeas(!showIdeas)}
-                  className="flex items-center text-xs transition-colors text-primary-400 hover:text-primary-300"
+                  className="flex items-center text-xs transition-colors text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
                 >
                   <FaLightbulb className="mr-1" size={12} />
                   <span>Need ideas?</span>
@@ -228,22 +228,22 @@ const RemixPage = () => {
                   transition={{ duration: 0.3 }}
                   className="mt-3 mb-6 overflow-hidden"
                 >
-                  <div className="p-4 border rounded-lg bg-dark-800/50 backdrop-blur-sm border-dark-700/50">
-                    <h4 className="mb-3 text-sm font-medium text-white">Remix Ideas:</h4>
+                  <div className="p-4 border rounded-lg bg-light-50/50 dark:bg-dark-800/50 backdrop-blur-sm border-light-200/50 dark:border-dark-700/50">
+                    <h4 className="mb-3 text-sm font-medium text-dark-900 dark:text-white">Remix Ideas:</h4>
                     
                     <div className="space-y-4">
                       {Object.entries(remixIdeas).map(([category, ideas]) => (
                         <div key={category}>
-                          <h5 className="mb-2 text-xs font-medium text-primary-400">{category}</h5>
+                          <h5 className="mb-2 text-xs font-medium text-primary-600 dark:text-primary-400">{category}</h5>
                           <div className="space-y-2">
                             {ideas.map((idea, index) => (
                               <div 
                                 key={index}
-                                className="flex items-center justify-between p-2 text-sm transition-colors rounded-lg cursor-pointer bg-dark-700/50 hover:bg-dark-700"
+                                className="flex items-center justify-between p-2 text-sm transition-colors rounded-lg cursor-pointer bg-light-100/50 dark:bg-dark-700/50 hover:bg-light-200/50 dark:hover:bg-dark-700"
                                 onClick={() => applyRemixIdea(idea)}
                               >
-                                <span className="text-dark-300">{idea}</span>
-                                <FaArrowRight size={10} className="text-primary-400" />
+                                <span className="text-dark-700 dark:text-dark-300">{idea}</span>
+                                <FaArrowRight size={10} className="text-primary-600 dark:text-primary-400" />
                               </div>
                             ))}
                           </div>
@@ -312,10 +312,10 @@ const RemixPage = () => {
         {/* Result Section */}
         <div>
           {loading ? (
-            <div className="flex flex-col items-center justify-center h-64 glass-card">
-              <div className="w-16 h-16 mb-4 border-t-4 border-b-4 rounded-full border-primary-500 animate-spin"></div>
-              <p className="text-lg text-white">Remixing your image...</p>
-              <p className="mt-2 text-sm text-dark-400">This may take a few moments</p>
+            <div className="flex flex-col items-center justify-center h-64 glass-card bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl">
+              <div className="w-16 h-16 mb-4 border-t-4 border-b-4 rounded-full border-secondary-500 animate-spin"></div>
+              <p className="text-lg text-dark-900 dark:text-white">Remixing your image...</p>
+              <p className="mt-2 text-sm text-dark-600 dark:text-dark-400">This may take a few moments</p>
             </div>
           ) : result ? (
             <ImageResult 
@@ -323,14 +323,14 @@ const RemixPage = () => {
               prompt={formData.prompt}
             />
           ) : (
-            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px]">
+            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px] bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl">
               <div className="p-6 mb-6 rounded-full bg-secondary-500/10 animate-pulse-slow">
                 <FaMagic size={64} className="text-secondary-500/60" />
               </div>
-              <h3 className="mb-2 text-xl font-semibold text-white font-display">
+              <h3 className="mb-2 text-xl font-semibold text-dark-900 dark:text-white font-display">
                 Your remixed image will appear here
               </h3>
-              <p className="max-w-md text-center text-dark-400">
+              <p className="max-w-md text-center text-dark-600 dark:text-dark-300">
                 Upload an image and add transformation instructions to remix it with AI
               </p>
             </div>
@@ -342,7 +342,7 @@ const RemixPage = () => {
       <div className="mt-16">
         <div className="flex items-center mb-6">
           <FaPaintBrush className="mr-3 text-secondary-500" size={24} />
-          <h2 className="text-2xl font-bold font-display">What Can You Create?</h2>
+          <h2 className="text-2xl font-bold text-dark-900 dark:text-white font-display">What Can You Create?</h2>
         </div>
         
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -350,14 +350,14 @@ const RemixPage = () => {
             <Card.Body>
               <div className="mb-4 text-center">
                 <span className="inline-block p-3 rounded-full bg-gradient-to-br from-primary-500/20 to-secondary-500/20">
-                  <FaPaintBrush size={24} className="text-secondary-400" />
+                  <FaPaintBrush size={24} className="text-secondary-600 dark:text-secondary-400" />
                 </span>
               </div>
               <Card.Title className="text-center">Style Transfer</Card.Title>
-              <p className="mb-4 text-center text-dark-300">
+              <p className="mb-4 text-center text-dark-600 dark:text-dark-300">
                 Transform your images into different artistic styles, from classic paintings to modern digital art.
               </p>
-              <div className="p-2 text-sm text-center rounded-lg bg-dark-700/50">
+              <div className="p-2 text-sm text-center rounded-lg bg-light-100/50 dark:bg-dark-700/50 text-dark-700 dark:text-dark-300">
                 "Transform into a watercolor painting with vivid colors"
               </div>
             </Card.Body>
@@ -367,14 +367,14 @@ const RemixPage = () => {
             <Card.Body>
               <div className="mb-4 text-center">
                 <span className="inline-block p-3 rounded-full bg-gradient-to-br from-primary-500/20 to-secondary-500/20">
-                  <FaRandom size={24} className="text-secondary-400" />
+                  <FaRandom size={24} className="text-secondary-600 dark:text-secondary-400" />
                 </span>
               </div>
               <Card.Title className="text-center">Scene Transformation</Card.Title>
-              <p className="mb-4 text-center text-dark-300">
+              <p className="mb-4 text-center text-dark-600 dark:text-dark-300">
                 Change the entire setting or background of your image while maintaining the main subjects.
               </p>
-              <div className="p-2 text-sm text-center rounded-lg bg-dark-700/50">
+              <div className="p-2 text-sm text-center rounded-lg bg-light-100/50 dark:bg-dark-700/50 text-dark-700 dark:text-dark-300">
                 "Place in a futuristic cyberpunk city at night"
               </div>
             </Card.Body>
@@ -384,14 +384,14 @@ const RemixPage = () => {
             <Card.Body>
               <div className="mb-4 text-center">
                 <span className="inline-block p-3 rounded-full bg-gradient-to-br from-primary-500/20 to-secondary-500/20">
-                  <FaMagic size={24} className="text-secondary-400" />
+                  <FaMagic size={24} className="text-secondary-600 dark:text-secondary-400" />
                 </span>
               </div>
               <Card.Title className="text-center">Concept Mixing</Card.Title>
-              <p className="mb-4 text-center text-dark-300">
+              <p className="mb-4 text-center text-dark-600 dark:text-dark-300">
                 Blend different concepts, themes, or genres to create unique and surprising combinations.
               </p>
-              <div className="p-2 text-sm text-center rounded-lg bg-dark-700/50">
+              <div className="p-2 text-sm text-center rounded-lg bg-light-100/50 dark:bg-dark-700/50 text-dark-700 dark:text-dark-300">
                 "Blend with steampunk aesthetic and mechanical elements"
               </div>
             </Card.Body>

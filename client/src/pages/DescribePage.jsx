@@ -93,14 +93,14 @@ const DescribePage = () => {
   
   // Placeholder for empty results section
   const EmptyResults = () => (
-    <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px]">
+    <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px] bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl">
       <div className="p-6 mb-6 rounded-full bg-primary-500/10 animate-pulse-slow">
         <FaComment size={64} className="text-primary-500/60" />
       </div>
-      <h3 className="mb-2 text-xl font-semibold text-white font-display">
+      <h3 className="mb-2 text-xl font-semibold text-dark-900 dark:text-white font-display">
         AI-generated descriptions will appear here
       </h3>
-      <p className="max-w-md text-center text-dark-400">
+      <p className="max-w-md text-center text-dark-600 dark:text-dark-300">
         Upload an image to get detailed descriptions of its content
       </p>
     </div>
@@ -108,10 +108,10 @@ const DescribePage = () => {
   
   // Loading state component
   const LoadingState = () => (
-    <div className="flex flex-col items-center justify-center h-64 glass-card">
+    <div className="flex flex-col items-center justify-center h-64 glass-card bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl">
       <div className="w-16 h-16 mb-4 border-t-4 border-b-4 rounded-full border-primary-500 animate-spin"></div>
-      <p className="text-lg text-white">Analyzing your image...</p>
-      <p className="mt-2 text-sm text-dark-400">AI is examining the content</p>
+      <p className="text-lg text-dark-900 dark:text-white">Analyzing your image...</p>
+      <p className="mt-2 text-sm text-dark-600 dark:text-dark-400">AI is examining the content</p>
     </div>
   );
   
@@ -119,10 +119,10 @@ const DescribePage = () => {
   const Results = ({ data, imageUrl }) => {
     if (!data || !data.data || !data.data.descriptions || data.data.descriptions.length === 0) {
       return (
-        <div className="p-6 glass-card">
+        <div className="p-6 glass-card bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl">
           <div className="flex items-center justify-center">
             <FaInfoCircle className="mr-2 text-amber-500" />
-            <p className="text-dark-300">No descriptions were generated for this image.</p>
+            <p className="text-dark-700 dark:text-dark-300">No descriptions were generated for this image.</p>
           </div>
         </div>
       );
@@ -133,10 +133,10 @@ const DescribePage = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="overflow-hidden glass-card"
+        className="overflow-hidden glass-card bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl"
       >
         {imageUrl && (
-          <div className="w-full h-48 overflow-hidden border-b border-dark-700/50">
+          <div className="w-full h-48 overflow-hidden border-b border-light-200/50 dark:border-dark-700/50">
             <img 
               src={imageUrl} 
               alt="Uploaded" 
@@ -146,8 +146,8 @@ const DescribePage = () => {
         )}
         
         <div className="p-6">
-          <h3 className="flex items-center mb-4 text-lg font-semibold font-display">
-            <FaFileAlt className="mr-2 text-primary-400" />
+          <h3 className="flex items-center mb-4 text-lg font-semibold text-dark-900 dark:text-white font-display">
+            <FaFileAlt className="mr-2 text-primary-600 dark:text-primary-400" />
             Generated Descriptions
           </h3>
           
@@ -155,9 +155,9 @@ const DescribePage = () => {
             {data.data.descriptions.map((description, index) => (
               <div 
                 key={index}
-                className="relative p-4 rounded-lg bg-dark-800/70 group"
+                className="relative p-4 rounded-lg bg-light-100/50 dark:bg-dark-800/70 group"
               >
-                <p className="text-sm text-dark-200">
+                <p className="text-sm text-dark-700 dark:text-dark-200">
                   {description.text}
                 </p>
                 
@@ -243,12 +243,12 @@ const DescribePage = () => {
               </Button>
             </div>
             
-            <div className="p-4 mt-4 border rounded-lg bg-dark-800/50 border-dark-700/30">
-              <h4 className="flex items-center mb-2 text-sm font-medium text-white">
-                <FaInfoCircle className="mr-2 text-primary-400" />
+            <div className="p-4 mt-4 border rounded-lg bg-light-50/50 dark:bg-dark-800/50 border-light-200/30 dark:border-dark-700/30">
+              <h4 className="flex items-center mb-2 text-sm font-medium text-dark-900 dark:text-white">
+                <FaInfoCircle className="mr-2 text-primary-600 dark:text-primary-400" />
                 What to expect:
               </h4>
-              <ul className="ml-6 space-y-1 text-xs list-disc text-dark-300">
+              <ul className="ml-6 space-y-1 text-xs list-disc text-dark-600 dark:text-dark-300">
                 <li>Detailed descriptions of objects, people, and settings in the image</li>
                 <li>Visual attributes like colors, textures, and styles</li>
                 <li>Context and setting of the image</li>
@@ -277,7 +277,7 @@ const DescribePage = () => {
       <div className="mt-16">
         <div className="flex items-center mb-6">
           <FaInfoCircle className="mr-3 text-primary-500" size={24} />
-          <h2 className="text-2xl font-bold font-display">Use Cases</h2>
+          <h2 className="text-2xl font-bold text-dark-900 dark:text-white font-display">Use Cases</h2>
         </div>
         
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -285,12 +285,12 @@ const DescribePage = () => {
             <Card key={index} variant="glass">
               <Card.Body>
                 <div className="flex justify-center mb-4">
-                  <span className="p-3 rounded-full bg-gradient-to-br from-primary-500/10 to-secondary-500/10 text-primary-400">
+                  <span className="p-3 rounded-full bg-gradient-to-br from-primary-500/10 to-secondary-500/10 text-primary-600 dark:text-primary-400">
                     {useCase.icon}
                   </span>
                 </div>
                 <Card.Title className="text-center">{useCase.title}</Card.Title>
-                <p className="text-center text-dark-300">
+                <p className="text-center text-dark-600 dark:text-dark-300">
                   {useCase.description}
                 </p>
               </Card.Body>

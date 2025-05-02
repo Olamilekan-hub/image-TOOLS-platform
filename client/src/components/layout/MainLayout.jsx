@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import GlassNavbar from './GlassNavbar';
+import Navbar from './Navbar';
 import Footer from './Footer';
 
 const MainLayout = ({ children }) => {
@@ -28,15 +28,15 @@ const MainLayout = ({ children }) => {
   }, [location.pathname]);
 
   return (
-    <div className="relative flex flex-col min-h-screen text-white bg-base-100">
+    <div className="relative flex flex-col min-h-screen text-dark-900 dark:text-white bg-white dark:bg-dark-950">
       {/* Background particle effect */}
-      <div className="fixed inset-0 bg-[radial-gradient(circle,rgba(60,9,108,0.05)_0%,rgba(16,0,43,0.2)_70%)] pointer-events-none"></div>
+      <div className="fixed inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.03)_0%,rgba(255,255,255,0)_70%)] dark:bg-[radial-gradient(circle,rgba(60,9,108,0.05)_0%,rgba(16,0,43,0.2)_70%)] pointer-events-none"></div>
       
       {/* Noise texture overlay */}
-      <div className="fixed inset-0 bg-noise opacity-[0.03] pointer-events-none mix-blend-soft-light"></div>
+      <div className="fixed inset-0 bg-noise opacity-[0.02] dark:opacity-[0.03] pointer-events-none mix-blend-soft-light"></div>
       
-      {/* Glass navbar */}
-      <GlassNavbar showToolbar={isToolsPage} />
+      {/* Navbar */}
+      <Navbar />
       
       {/* Page transition and content */}
       <AnimatePresence mode="wait">

@@ -167,17 +167,17 @@ const ReframePage = () => {
             key={index} 
             variant="glass" 
             hover={true}
-            className="border-gradient"
+            className="border-gradient bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl"
           >
             <Card.Body>
               <div className="flex items-start space-x-4">
-                <div className="p-3 rounded-lg bg-primary-500/10 text-primary-400">
+                <div className="p-3 rounded-lg bg-primary-500/10 text-primary-600 dark:text-primary-400">
                   {device.icon}
                 </div>
                 <div>
-                  <h3 className="mb-2 font-medium text-white">{device.title}</h3>
-                  <p className="mb-2 text-sm text-dark-300">{device.description}</p>
-                  <span className="inline-block px-2 py-1 text-xs rounded bg-dark-700/60">
+                  <h3 className="mb-2 font-medium text-dark-900 dark:text-white">{device.title}</h3>
+                  <p className="mb-2 text-sm text-dark-600 dark:text-dark-300">{device.description}</p>
+                  <span className="inline-block px-2 py-1 text-xs rounded bg-light-200/60 dark:bg-dark-700/60 text-dark-700 dark:text-dark-300">
                     {device.resolution}
                   </span>
                 </div>
@@ -255,24 +255,24 @@ const ReframePage = () => {
         {/* Result Section */}
         <div>
           {loading ? (
-            <div className="flex flex-col items-center justify-center h-64 glass-card">
+            <div className="flex flex-col items-center justify-center h-64 glass-card bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl">
               <div className="w-16 h-16 mb-4 border-t-4 border-b-4 rounded-full border-primary-500 animate-spin"></div>
-              <p className="text-lg text-white">Reframing your image...</p>
-              <p className="mt-2 text-sm text-dark-400">This may take a few moments</p>
+              <p className="text-lg text-dark-900 dark:text-white">Reframing your image...</p>
+              <p className="mt-2 text-sm text-dark-600 dark:text-dark-400">This may take a few moments</p>
             </div>
           ) : result ? (
             <ImageResult 
               imageData={result}
             />
           ) : (
-            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px]">
+            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px] bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl">
               <div className="p-6 mb-6 rounded-full bg-primary-500/10 animate-pulse-slow">
                 <FaCrop size={64} className="text-primary-500/60" />
               </div>
-              <h3 className="mb-2 text-xl font-semibold text-white font-display">
+              <h3 className="mb-2 text-xl font-semibold text-dark-900 dark:text-white font-display">
                 Your reframed image will appear here
               </h3>
-              <p className="max-w-md text-center text-dark-400">
+              <p className="max-w-md text-center text-dark-600 dark:text-dark-300">
                 Upload an image and select your desired aspect ratio
               </p>
             </div>
@@ -284,14 +284,14 @@ const ReframePage = () => {
       <div className="mt-16">
         <div className="flex items-center mb-6">
           <FaInfoCircle className="mr-3 text-primary-500" size={24} />
-          <h2 className="text-2xl font-bold font-display">About Reframing</h2>
+          <h2 className="text-2xl font-bold text-dark-900 dark:text-white font-display">About Reframing</h2>
         </div>
         
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Card variant="glass">
             <Card.Body>
               <Card.Title>What is Reframing?</Card.Title>
-              <p className="text-dark-300">
+              <p className="text-dark-600 dark:text-dark-300">
                 Reframing intelligently adapts your image to a new aspect ratio without awkward cropping or distortion. 
                 Unlike traditional resizing methods that can cut off important parts or stretch the image unnaturally, 
                 AI reframing uses advanced algorithms to preserve the main subject while extending the background or 
@@ -303,7 +303,7 @@ const ReframePage = () => {
           <Card variant="glass">
             <Card.Body>
               <Card.Title>Common Use Cases</Card.Title>
-              <ul className="pl-5 space-y-2 list-disc text-dark-300">
+              <ul className="pl-5 space-y-2 list-disc text-dark-600 dark:text-dark-300">
                 <li>Convert landscape photos to portrait format for stories or social media</li>
                 <li>Adapt images to specific dimensions for websites, ads, or print materials</li>
                 <li>Create square versions of rectangular images for Instagram or profile pictures</li>
@@ -322,7 +322,7 @@ const ReframePage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-light-900/30 dark:bg-dark-900/80 backdrop-blur-sm"
             onClick={closePremiumNotice}
           >
             <motion.div 
@@ -330,7 +330,7 @@ const ReframePage = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="max-w-md p-8 mx-auto shadow-2xl bg-dark-800 rounded-xl"
+              className="max-w-md p-8 mx-auto shadow-2xl bg-white dark:bg-dark-800 rounded-xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-center mb-6">
@@ -339,9 +339,9 @@ const ReframePage = () => {
                 </div>
               </div>
               
-              <h3 className="mb-3 text-2xl font-bold text-center font-display">Premium Feature</h3>
+              <h3 className="mb-3 text-2xl font-bold text-center text-dark-900 dark:text-white font-display">Premium Feature</h3>
               
-              <p className="mb-6 text-center text-dark-300">
+              <p className="mb-6 text-center text-dark-600 dark:text-dark-300">
                 V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
               </p>
               

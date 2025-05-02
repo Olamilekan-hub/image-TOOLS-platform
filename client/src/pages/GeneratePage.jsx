@@ -194,13 +194,13 @@ const GeneratePage = () => {
                 <button
                   type="button"
                   onClick={() => setShowTips(!showTips)}
-                  className="flex items-center text-xs transition-colors text-primary-400 hover:text-primary-300"
+                  className="flex items-center text-xs transition-colors text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
                 >
                   <FaLightbulb className="mr-1" size={12} />
                   <span>{showTips ? 'Hide Tips' : 'Show Tips'}</span>
                 </button>
                 
-                <span className="text-xs text-dark-400">
+                <span className="text-xs text-dark-500 dark:text-dark-400">
                   {formData.prompt.length} characters
                 </span>
               </div>
@@ -214,9 +214,9 @@ const GeneratePage = () => {
                     transition={{ duration: 0.3 }}
                     className="mt-3 overflow-hidden"
                   >
-                    <div className="p-3 border rounded-lg bg-dark-800/50 backdrop-blur-sm border-dark-700/50">
-                      <h4 className="mb-2 text-sm font-medium text-primary-400">Tips for Better Results:</h4>
-                      <ul className="ml-4 space-y-1 text-xs list-disc text-dark-300">
+                    <div className="p-3 border rounded-lg bg-light-50/50 dark:bg-dark-800/50 backdrop-blur-sm border-light-200/50 dark:border-dark-700/50">
+                      <h4 className="mb-2 text-sm font-medium text-primary-600 dark:text-primary-400">Tips for Better Results:</h4>
+                      <ul className="ml-4 space-y-1 text-xs list-disc text-dark-600 dark:text-dark-300">
                         <li>Include subject, setting, lighting, colors, and mood</li>
                         <li>Specify artistic style (e.g., "oil painting", "digital art")</li>
                         <li>Add camera details for photorealistic results (e.g., "shot with DSLR camera, 85mm lens")</li>
@@ -272,8 +272,8 @@ const GeneratePage = () => {
           {loading ? (
             <div className="flex flex-col items-center justify-center h-64 glass-card">
               <div className="w-16 h-16 mb-4 border-t-4 border-b-4 rounded-full border-primary-500 animate-spin"></div>
-              <p className="text-lg text-white">Creating your masterpiece...</p>
-              <p className="mt-2 text-sm text-dark-400">This may take a few moments</p>
+              <p className="text-lg text-dark-900 dark:text-white">Creating your masterpiece...</p>
+              <p className="mt-2 text-sm text-dark-600 dark:text-dark-400">This may take a few moments</p>
             </div>
           ) : result ? (
             <ImageResult 
@@ -281,14 +281,14 @@ const GeneratePage = () => {
               prompt={formData.prompt}
             />
           ) : (
-            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px]">
+            <div className="glass-card flex flex-col items-center justify-center p-8 h-full min-h-[400px] bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl">
               <div className="p-6 mb-6 rounded-full bg-primary-500/10 animate-pulse-slow">
                 <FaImage size={64} className="text-primary-500/60" />
               </div>
-              <h3 className="mb-2 text-xl font-semibold text-white font-display">
+              <h3 className="mb-2 text-xl font-semibold text-dark-900 dark:text-white font-display">
                 Your image will appear here
               </h3>
-              <p className="max-w-md text-center text-dark-400">
+              <p className="max-w-md text-center text-dark-600 dark:text-dark-300">
                 Enter a prompt and click "Generate Image" to create your AI artwork
               </p>
             </div>
@@ -300,7 +300,7 @@ const GeneratePage = () => {
       <div className="mt-16">
         <div className="flex items-center mb-6">
           <FaLightbulb className="mr-3 text-primary-500" size={24} />
-          <h2 className="text-2xl font-bold font-display">Example Prompts</h2>
+          <h2 className="text-2xl font-bold text-dark-900 dark:text-white font-display">Example Prompts</h2>
         </div>
         
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -308,18 +308,18 @@ const GeneratePage = () => {
             <motion.div
               key={index}
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="transition-shadow cursor-pointer glass-card hover:shadow-lg"
+              className="transition-shadow cursor-pointer glass-card hover:shadow-lg bg-white/70 dark:bg-dark-800/70 backdrop-blur-md border border-light-200/50 dark:border-dark-700/50 rounded-xl"
               onClick={() => setExamplePrompt(example.prompt)}
             >
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-medium text-white">{example.title}</h3>
+                  <h3 className="font-medium text-dark-900 dark:text-white">{example.title}</h3>
                   <Card.Badge color="primary">{example.category}</Card.Badge>
                 </div>
-                <p className="text-sm text-dark-300">{example.prompt}</p>
+                <p className="text-sm text-dark-600 dark:text-dark-300">{example.prompt}</p>
               </div>
-              <div className="flex justify-end px-4 py-2 border-t border-dark-800/50">
-                <button className="flex items-center text-xs text-primary-400 hover:text-primary-300">
+              <div className="flex justify-end px-4 py-2 border-t border-light-200/50 dark:border-dark-800/50">
+                <button className="flex items-center text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">
                   Use this prompt <FaArrowRight className="ml-1" size={10} />
                 </button>
               </div>
@@ -335,7 +335,7 @@ const GeneratePage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-light-900/30 dark:bg-dark-900/80 backdrop-blur-sm"
             onClick={closePremiumNotice}
           >
             <motion.div 
@@ -343,7 +343,7 @@ const GeneratePage = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="max-w-md p-8 mx-auto shadow-2xl bg-dark-800 rounded-xl"
+              className="max-w-md p-8 mx-auto shadow-2xl bg-white dark:bg-dark-800 rounded-xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-center mb-6">
@@ -352,9 +352,9 @@ const GeneratePage = () => {
                 </div>
               </div>
               
-              <h3 className="mb-3 text-2xl font-bold text-center font-display">Premium Feature</h3>
+              <h3 className="mb-3 text-2xl font-bold text-center text-dark-900 dark:text-white font-display">Premium Feature</h3>
               
-              <p className="mb-6 text-center text-dark-300">
+              <p className="mb-6 text-center text-dark-600 dark:text-dark-300">
                 V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
               </p>
               
