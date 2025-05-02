@@ -6,15 +6,11 @@ import {
   FaExternalLinkAlt, 
   FaClipboard, 
   FaExclamationCircle,
-  FaInfoCircle,
-  FaCode,
   FaCheck,
   FaImage,
   FaShareAlt,
   FaTimes,
-  FaExpand,
-  FaCompress,
-  FaLock
+  FaExpand
 } from 'react-icons/fa';
 import Button from './Button';
 import Card from './Card';
@@ -25,8 +21,6 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
   const [imageUrl, setImageUrl] = useState('');
   const [imageLoadError, setImageLoadError] = useState(false);
   const [imageLoadSuccess, setImageLoadSuccess] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const [showDevTools, setShowDevTools] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [metadata, setMetadata] = useState({
@@ -54,7 +48,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
     setImageUrl(url);
     
     if (!url) {
-      console.error('No image URL found in the response data:', imageData);
+      console.error('No image URL found in the response data');
       setImageLoadError(true);
       addToast('No image URL found in the API response', 'error');
     }
@@ -121,21 +115,20 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
   
   // Handle image load error
   const handleImageError = () => {
-    console.error('Failed to load image from URL:', imageUrl);
+    console.error('Failed to load image from URL');
     setImageLoadError(true);
     setImageLoadSuccess(false);
-    addToast('Failed to load the generated image. The image link may have expired or be invalid.', 'error');
+    addToast('Failed to load the generated image. The image may still be processing.', 'error');
   };
   
   // Handle image load success
   const handleImageLoad = () => {
-    console.log('Image loaded successfully');
     setImageLoadSuccess(true);
     setImageLoadError(false);
   };
   
-  // Handle download button click with error handling - IMPROVED TO DOWNLOAD DIRECTLY
-  const handleDownload = () => {
+  // Improved download function that works completely in the background
+  const handleDownload = async () => {
     if (!imageUrl) {
       addToast('No image available to download', 'error');
       return;
@@ -147,37 +140,64 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
     }
     
     try {
-      // Fetch the image as a blob
-      fetch(imageUrl)
-        .then(response => response.blob())
-        .then(blob => {
-          // Create object URL
-          const blobUrl = URL.createObjectURL(blob);
-          
-          // Create download link and trigger download
-          const link = document.createElement('a');
-          link.href = blobUrl;
-          link.download = `pixy-ai-${Date.now()}.png`;
-          document.body.appendChild(link);
-          link.click();
-          
-          // Clean up
-          document.body.removeChild(link);
-          setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
-          
-          addToast('Image downloaded successfully', 'success');
-        })
-        .catch(error => {
-          console.error('Download error:', error);
-          // Fallback for browsers that don't support the above
-          window.location.href = imageUrl;
-          addToast('Direct download not supported in your browser. Opening image in new tab.', 'info');
-        });
+      // Show loading toast
+      addToast('Starting download...', 'info');
+      
+      // Create a hidden link element
+      const link = document.createElement('a');
+      
+      // Set up an internal handler to clean up after download starts
+      const cleanupDownload = () => {
+        URL.revokeObjectURL(link.href);
+        document.body.removeChild(link);
+      };
+      
+      try {
+        // Fetch the image directly without exposing URL to user
+        const response = await fetch(imageUrl);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to download: ${response.status} ${response.statusText}`);
+        }
+        
+        // Get image as blob
+        const blob = await response.blob();
+        
+        // Create object URL from blob (stays internal to browser)
+        const objectUrl = URL.createObjectURL(blob);
+        
+        // Set up hidden download link
+        link.href = objectUrl;
+        link.download = `pixy-ai-${Date.now()}.png`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        
+        // Trigger click and clean up
+        link.click();
+        
+        // Cleanup after small delay to ensure download starts
+        setTimeout(cleanupDownload, 100);
+        
+        addToast('Image downloaded successfully!', 'success');
+      } catch (fetchError) {
+        console.error('Fetch error:', fetchError);
+        
+        // Fallback method - this hides the URL but may open a download dialog
+        link.href = imageUrl;
+        link.download = `pixy-ai-${Date.now()}.png`;
+        link.target = '_blank';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        
+        // Cleanup
+        setTimeout(cleanupDownload, 100);
+        
+        addToast('Image download initiated', 'success');
+      }
     } catch (error) {
       console.error('Download error:', error);
-      // Ultimate fallback: Open in new tab
-      window.open(imageUrl, '_blank');
-      addToast('Direct download failed. Image opened in new tab instead.', 'info');
+      addToast('Download failed. Please try again.', 'error');
     }
   };
   
@@ -201,12 +221,12 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
     );
   };
 
-  // Share image (mock functionality)
+  // Share image
   const handleShare = () => {
     if (navigator.share && imageUrl) {
       navigator.share({
-        title: 'Check out this AI-generated image',
-        text: prompt || 'AI-generated image',
+        title: 'AI-generated image',
+        text: prompt || 'Check out this AI-generated image',
         url: imageUrl
       }).then(() => {
         addToast('Image shared successfully!', 'success');
@@ -324,17 +344,6 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
                       variant="glass" 
                       size="sm"
                       className="backdrop-blur-md"
-                      onClick={() => window.open(imageUrl, '_blank')}
-                      title="Open in new tab"
-                      icon={<FaExternalLinkAlt size={14} />}
-                    >
-                      Open
-                    </Button>
-                    
-                    <Button 
-                      variant="glass" 
-                      size="sm"
-                      className="backdrop-blur-md"
                       onClick={handleShare}
                       title="Share image"
                       icon={<FaShareAlt size={14} />}
@@ -395,78 +404,29 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
             )}
           </div>
           
-          {/* Developer Tools - Hidden by Default */}
-          <div className="mt-4 pt-4 border-t border-light-200/50 dark:border-dark-700/50">
-            <Button
-              variant="ghost"
-              size="xs"
-              className="justify-between w-full text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white"
-              onClick={() => setShowDevTools(!showDevTools)}
-              icon={<FaLock size={12} />}
-              iconPosition="left"
+          {/* Download and action buttons for smaller screens */}
+          <div className="flex flex-wrap gap-3 mt-4 pt-4 md:hidden border-t border-light-200/50 dark:border-dark-700/50">
+            <Button 
+              variant="primary" 
+              size="sm"
+              onClick={handleDownload}
+              title="Download image"
+              icon={<FaDownload size={14} />}
+              className="flex-1"
             >
-              <span>Developer Tools</span>
-              <svg 
-                className={`w-4 h-4 transition-transform duration-300 ${showDevTools ? 'rotate-180' : ''}`} 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+              Download
             </Button>
             
-            <AnimatePresence>
-              {showDevTools && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-4 overflow-hidden"
-                >
-                  {/* API Response Details (Collapsible) */}
-                  <div>
-                    <Button
-                      variant="ghost"
-                      size="xs"
-                      className="justify-between w-full text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white"
-                      onClick={() => setShowDetails(!showDetails)}
-                      icon={<FaCode size={12} />}
-                      iconPosition="left"
-                    >
-                      <span>API Response Details</span>
-                      <svg 
-                        className={`w-4 h-4 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`} 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </Button>
-                    
-                    <AnimatePresence>
-                      {showDetails && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="p-3 mt-2 overflow-auto text-xs border rounded-lg bg-light-50/70 dark:bg-dark-900/70 max-h-48 border-light-300 dark:border-dark-700">
-                            <pre className="font-mono text-xs text-dark-600 dark:text-dark-300">
-                              {JSON.stringify(imageData, null, 2)}
-                            </pre>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <Button 
+              variant="secondary" 
+              size="sm"
+              onClick={toggleFullScreen}
+              title="View fullscreen"
+              icon={<FaExpand size={14} />}
+              className="flex-1"
+            >
+              Fullscreen
+            </Button>
           </div>
         </Card.Body>
       </Card>
