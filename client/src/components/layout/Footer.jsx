@@ -1,12 +1,13 @@
 // client/src/components/layout/Footer.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaGithub, FaTwitter, FaLinkedin, FaEnvelope, FaCode } from 'react-icons/fa';
+import { FaEnvelope, FaBook } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   
-  // Site sections
+  // Site sections - only keeping the Image Tools section
   const sections = [
     {
       title: 'Image Tools',
@@ -18,32 +19,13 @@ const Footer = () => {
         { name: 'Describe', path: '/describe' },
         { name: 'Reframe', path: '/reframe' },
       ]
-    },
-    {
-      title: 'Resources',
-      links: [
-        { name: 'Documentation', path: '#' },
-        { name: 'API Reference', path: '#' },
-        { name: 'Blog', path: '#' },
-        { name: 'Examples', path: '#' },
-      ]
-    },
-    {
-      title: 'Company',
-      links: [
-        { name: 'About', path: '#' },
-        { name: 'Privacy Policy', path: '#' },
-        { name: 'Terms of Service', path: '#' },
-        { name: 'Contact', path: '#' },
-      ]
-    },
+    }
   ];
   
-  // Social links
+  // Social links - keeping Email and adding Twitter/X and Docs
   const socialLinks = [
-    { icon: <FaGithub />, href: '#', label: 'GitHub' },
-    { icon: <FaTwitter />, href: '#', label: 'Twitter' },
-    { icon: <FaLinkedin />, href: '#', label: 'LinkedIn' },
+    { icon: <FaXTwitter />, href: 'https://x.com/usePixyAI', label: 'Twitter' },
+    { icon: <FaBook />, href: 'https://pixy-ai.gitbook.io/pixy-ai', label: 'Documentation' },
     { icon: <FaEnvelope />, href: 'mailto:info@pixyai.com', label: 'Email' },
   ];
 
@@ -58,9 +40,9 @@ const Footer = () => {
       <div className="absolute rounded-full -bottom-20 -left-20 w-60 h-60 bg-accent-500/5 blur-3xl"></div>
       
       <div className="container px-4 pt-16 pb-8 mx-auto">
-        <div className="grid grid-cols-1 gap-8 pb-12 md:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-8 pb-12 md:grid-cols-2">
           {/* Logo and info */}
-          <div className="lg:col-span-2">
+          <div>
             <div className="flex items-center mb-4 space-x-2">
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500 via-accent-500 to-primary-500">
                 <span className="text-xl font-bold text-white font-display">P</span>
@@ -72,11 +54,13 @@ const Footer = () => {
             <p className="max-w-sm mb-6 text-dark-600 dark:text-dark-300">
               Powerful AI platform for creating, editing, and transforming images with intuitive tools powered by state-of-the-art models.
             </p>
-            <div className="flex space-x-3">
+            <div className="flex space-x-3 align-between">
               {socialLinks.map((link, index) => (
                 <a 
                   key={index}
                   href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center justify-center w-10 h-10 transition-colors border rounded-lg text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-white bg-light-100 dark:bg-dark-800 hover:bg-light-200 dark:hover:bg-dark-700 border-light-200 dark:border-dark-700"
                   aria-label={link.label}
                 >
@@ -86,7 +70,7 @@ const Footer = () => {
             </div>
           </div>
           
-          {/* Navigation sections */}
+          {/* Navigation sections - only Image Tools section */}
           {sections.map((section, index) => (
             <div key={index}>
               <h3 className="mb-4 text-base font-semibold font-display text-dark-800 dark:text-white">
@@ -125,12 +109,12 @@ const Footer = () => {
               Cookie Policy
             </a>
             <a 
-              href="https://pixyai.com" 
+              href="https://pixy-ai.gitbook.io/pixy-ai" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="flex items-center text-xs transition-colors text-dark-500 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400"
             >
-              <FaCode className="mr-1 text-xs" /> Powered by Pixy AI
+              <FaBook className="mr-1 text-xs" /> Powered by Pixy AI
             </a>
           </div>
         </div>

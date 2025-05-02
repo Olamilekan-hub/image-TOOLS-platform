@@ -1,9 +1,8 @@
 // client/src/pages/UpscalePage.jsx
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   FaExpandArrowsAlt, 
-  FaCrown, 
   FaImage,
   FaMagic,
   FaInfoCircle,
@@ -36,31 +35,16 @@ const UpscalePage = () => {
   const [imageFile, setImageFile] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showPremiumNotice, setShowPremiumNotice] = useState(false);
   
-  // Model options
+  // Model options (removed premium options)
   const modelOptions = [
     { value: 'V_2A', label: 'V2 Turbo (Recommended)' },
-    { value: 'V_2', label: 'V2 Standard' },
-    { value: 'V_3A', label: 'V3 Turbo (Premium) ✨' },
-    { value: 'V_3', label: 'V3 Standard (Premium) ✨' }
+    { value: 'V_2', label: 'V2 Standard' }
   ];
   
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    // Check if premium model is selected
-    if (name === 'model' && (value === 'V_3A' || value === 'V_3')) {
-      setShowPremiumNotice(true);
-      // Set back to a non-premium model
-      setFormData({
-        ...formData,
-        model: 'V_2A'
-      });
-      return;
-    }
-    
     setFormData({
       ...formData,
       [name]: value
@@ -72,11 +56,6 @@ const UpscalePage = () => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
     }
-  };
-  
-  // Close premium notice modal
-  const closePremiumNotice = () => {
-    setShowPremiumNotice(false);
   };
   
   // Handle form submission
@@ -313,50 +292,6 @@ const UpscalePage = () => {
           </Card>
         </div>
       </div>
-      
-      {/* Premium Notice Modal */}
-      <AnimatePresence>
-        {showPremiumNotice && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-light-900/30 dark:bg-dark-900/80 backdrop-blur-sm"
-            onClick={closePremiumNotice}
-          >
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="max-w-md p-8 mx-auto shadow-2xl bg-white dark:bg-dark-800 rounded-xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex justify-center mb-6">
-                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/10">
-                  <FaCrown size={32} className="text-amber-500" />
-                </div>
-              </div>
-              
-              <h3 className="mb-3 text-2xl font-bold text-center text-dark-900 dark:text-white font-display">Premium Feature</h3>
-              
-              <p className="mb-6 text-center text-dark-600 dark:text-dark-300">
-                V3 models are exclusive to premium users. Our premium subscription will be available soon with enhanced features and faster processing!
-              </p>
-              
-              <div className="flex justify-center">
-                <Button 
-                  onClick={closePremiumNotice}
-                  variant="glass"
-                  size="lg"
-                >
-                  Continue with Standard Models
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

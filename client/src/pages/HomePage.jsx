@@ -1,4 +1,4 @@
-// client/src/pages/HomePage.jsx
+// client/src/pages/HomePage.jsx - Updated "Powerful AI Toolkit" Section
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -231,19 +231,23 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Features Section - IMPROVED DISPLAY FOR "POWERFUL AI TOOLKIT" */}
       <section id="features" className="relative py-20 bg-light-50 dark:bg-dark-950">
+        {/* Enhanced background with subtle pattern and gradient */}
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-500/5 to-transparent"></div>
+        
         <div className="container px-4 mx-auto">
           <div className="mb-16 text-center">
+            {/* Enhanced badge with stronger contrast and better visibility */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="inline-block mb-3 px-4 py-1.5 bg-light-100/80 dark:bg-dark-800/80 rounded-full"
+              className="inline-block px-6 py-2 mb-4 text-white rounded-full bg-gradient-to-r from-primary-600 to-secondary-600 shadow-lg shadow-primary-500/20"
             >
-              <span className="text-sm font-medium text-transparent bg-gradient-to-r from-primary-400 to-secondary-800 bg-clip-text">
+              <span className="text-sm font-medium">
                 Powerful AI Toolkit
               </span>
             </motion.div>
@@ -253,7 +257,7 @@ const HomePage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="mb-4 text-3xl font-bold tracking-tight md:text-4xl font-display text-dark-900 dark:text-white"
+              className="mb-6 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl font-display text-dark-900 dark:text-white"
             >
               Everything You Need for AI Imagery
             </motion.h2>
@@ -263,12 +267,16 @@ const HomePage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="max-w-2xl mx-auto text-lg text-dark-600 dark:text-dark-300"
+              className="max-w-2xl mx-auto text-lg md:text-xl text-dark-600 dark:text-dark-300"
             >
               Explore our suite of AI-powered tools for image creation, modification, and enhancement
             </motion.p>
+            
+            {/* Decorative element - horizontal gradient line */}
+            <div className="w-24 h-1 mx-auto mt-8 mb-12 rounded-full bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500"></div>
           </div>
 
+          {/* Improved feature cards with better shadow and hover effects */}
           <motion.div 
             className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
             variants={containerVariants}
@@ -284,20 +292,22 @@ const HomePage = () => {
                 <Link to={feature.link} className="block h-full">
                   <Card
                     variant="glass"
-                    className="h-full transition-all group hover:translate-y-[-8px]"
+                    className="h-full transition-all duration-300 group hover:translate-y-[-8px] border border-light-200/50 dark:border-dark-700/50 hover:border-primary-500/30 dark:hover:border-primary-500/30 shadow-lg"
                     hover={true}
                     glow={true}
                   >
-                    <Card.Body>
-                      <div className={`w-12 h-12 rounded-lg mb-4 flex items-center justify-center text-white bg-gradient-to-br ${feature.gradient} group-hover:scale-110 transition-transform duration-300`}>
+                    <Card.Body className="p-8">
+                      <div className={`w-16 h-16 mb-6 rounded-xl flex items-center justify-center text-white bg-gradient-to-br ${feature.gradient} group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-${feature.color}-500/20`}>
                         {feature.icon}
                       </div>
-                      <Card.Title>{feature.title}</Card.Title>
-                      <p className="transition-colors text-dark-600 dark:text-dark-300 group-hover:text-dark-700 dark:group-hover:text-dark-200">{feature.description}</p>
+                      <Card.Title className="text-2xl">{feature.title}</Card.Title>
+                      <p className="mt-3 transition-colors text-dark-600 dark:text-dark-300 group-hover:text-dark-700 dark:group-hover:text-dark-200">
+                        {feature.description}
+                      </p>
                     </Card.Body>
-                    <Card.Footer className="flex justify-end">
-                      <div className="flex items-center gap-1 text-sm transition-all text-primary-600 dark:text-primary-400 group-hover:gap-2">
-                        Try Now <FaArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
+                    <Card.Footer className="flex justify-end px-8 py-4">
+                      <div className="flex items-center gap-2 text-sm font-medium transition-all text-primary-600 dark:text-primary-400 group-hover:gap-3">
+                        Try Now <FaArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                       </div>
                     </Card.Footer>
                   </Card>
