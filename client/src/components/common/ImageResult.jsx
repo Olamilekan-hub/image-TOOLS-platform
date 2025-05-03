@@ -3,14 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaDownload, 
-  FaExternalLinkAlt, 
   FaClipboard, 
   FaExclamationCircle,
   FaCheck,
-  FaImage,
+  FaExpand,
   FaShareAlt,
-  FaTimes,
-  FaExpand
+  FaTimes
 } from 'react-icons/fa';
 import Button from './Button';
 import Card from './Card';
@@ -127,78 +125,40 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
     setImageLoadError(false);
   };
   
-  // Improved download function that works completely in the background
-  const handleDownload = async () => {
+  // Correctly implemented download function
+  const handleDownload = () => {
     if (!imageUrl) {
       addToast('No image available to download', 'error');
       return;
     }
     
+    // Use custom onDownload if provided
     if (onDownload) {
       onDownload(imageUrl);
       return;
     }
     
-    try {
-      // Show loading toast
-      addToast('Starting download...', 'info');
-      
-      // Create a hidden link element
-      const link = document.createElement('a');
-      
-      // Set up an internal handler to clean up after download starts
-      const cleanupDownload = () => {
-        URL.revokeObjectURL(link.href);
-        document.body.removeChild(link);
-      };
-      
-      try {
-        // Fetch the image directly without exposing URL to user
-        const response = await fetch(imageUrl);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to download: ${response.status} ${response.statusText}`);
-        }
-        
-        // Get image as blob
-        const blob = await response.blob();
-        
-        // Create object URL from blob (stays internal to browser)
-        const objectUrl = URL.createObjectURL(blob);
-        
-        // Set up hidden download link
-        link.href = objectUrl;
-        link.download = `pixy-ai-${Date.now()}.png`;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        
-        // Trigger click and clean up
-        link.click();
-        
-        // Cleanup after small delay to ensure download starts
-        setTimeout(cleanupDownload, 100);
-        
-        addToast('Image downloaded successfully!', 'success');
-      } catch (fetchError) {
-        console.error('Fetch error:', fetchError);
-        
-        // Fallback method - this hides the URL but may open a download dialog
-        link.href = imageUrl;
-        link.download = `pixy-ai-${Date.now()}.png`;
-        link.target = '_blank';
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        
-        // Cleanup
-        setTimeout(cleanupDownload, 100);
-        
-        addToast('Image download initiated', 'success');
-      }
-    } catch (error) {
-      console.error('Download error:', error);
-      addToast('Download failed. Please try again.', 'error');
-    }
+    // The correct way to trigger a download directly:
+    // 1. Create an invisible anchor element in memory
+    const downloadLink = document.createElement('a');
+    
+    // 2. Set its href to the image URL (this stays internal to the browser)
+    downloadLink.href = imageUrl;
+    
+    // 3. Set download attribute with a filename (forces "Save As" dialog)
+    downloadLink.download = `pixy-ai-${Date.now()}.png`;
+    
+    // 4. Append to document (required for Firefox)
+    document.body.appendChild(downloadLink);
+    
+    // 5. Programmatically click (triggers Save As without navigation)
+    downloadLink.click();
+    
+    // 6. Clean up
+    document.body.removeChild(downloadLink);
+    
+    // 7. Notify user
+    addToast('Download started!', 'success');
   };
   
   // Copy prompt to clipboard
@@ -270,7 +230,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
           >
             <div className="relative max-w-full max-h-full p-4">
               <button 
-                className="absolute p-2 rounded-full text-white bg-dark-800/50 top-4 right-4 hover:bg-dark-700"
+                className="absolute p-2 text-white rounded-full bg-dark-800/50 top-4 right-4 hover:bg-dark-700"
                 onClick={toggleFullScreen}
               >
                 <FaTimes size={24} />
@@ -307,7 +267,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
             <div className="relative group">
               {/* Image with click to fullscreen */}
               <div 
-                className="w-full overflow-hidden bg-light-100/30 dark:bg-dark-900/30 rounded-t-xl cursor-pointer"
+                className="w-full overflow-hidden cursor-pointer bg-light-100/30 dark:bg-dark-900/30 rounded-t-xl"
                 onClick={toggleFullScreen}
               >
                 <img 
@@ -318,7 +278,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
                   onLoad={handleImageLoad}
                 />
                 {/* Fullscreen hint overlay */}
-                <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 bg-dark-900/40 opacity-0 group-hover:opacity-100">
+                <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0 bg-dark-900/40 group-hover:opacity-100">
                   <div className="p-3 rounded-full bg-dark-800/70">
                     <FaExpand className="text-white" size={20} />
                   </div>
@@ -327,7 +287,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
               
               {/* Action buttons overlay - visible on hover or mobile */}
               {imageLoadSuccess && (
-                <div className="absolute bottom-0 flex items-center justify-center w-full p-4 transition-opacity duration-300 bg-gradient-to-t from-dark-900/80 to-transparent opacity-0 group-hover:opacity-100">
+                <div className="absolute bottom-0 flex items-center justify-center w-full p-4 transition-opacity duration-300 opacity-0 bg-gradient-to-t from-dark-900/80 to-transparent group-hover:opacity-100">
                   <div className="flex space-x-3">
                     <Button 
                       variant="glass" 
@@ -405,7 +365,7 @@ const ImageResult = ({ imageData, prompt, onDownload }) => {
           </div>
           
           {/* Download and action buttons for smaller screens */}
-          <div className="flex flex-wrap gap-3 mt-4 pt-4 md:hidden border-t border-light-200/50 dark:border-dark-700/50">
+          <div className="flex flex-wrap gap-3 pt-4 mt-4 border-t md:hidden border-light-200/50 dark:border-dark-700/50">
             <Button 
               variant="primary" 
               size="sm"

@@ -27,7 +27,7 @@ const handleApiError = (error, res) => {
   
   // Extract error information if available
   const statusCode = error.response?.status || 500;
-  const errorMessage = error.response?.data?.message || 'An error occurred with the Ideogram API';
+  const errorMessage = error.response?.data?.message || 'An error occurred with the  API';
   
   return res.status(statusCode).json({
     success: false,
